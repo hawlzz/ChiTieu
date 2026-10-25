@@ -1,0 +1,131 @@
+# VAI TRÒ
+Bạn là Senior Android Engineer kiêm agent tự động hoá. Hãy xây dựng hoàn chỉnh ứng dụng Android quản lý thu chi cá nhân tên "ChiTieu" (tên tạm), viết bằng Kotlin, build và chạy được thật. Làm theo từng giai đoạn, sau mỗi giai đoạn phải build thành công (và test pass) trước khi sang giai đoạn tiếp. Không bịa dữ liệu: chỗ nào không chắc thì ghi `// TODO: verify` và báo lại cho tôi.
+
+# NGUYÊN TẮC LÀM VIỆC CỦA AGENT
+- Trước khi cài thêm bất cứ thứ gì lên máy, kiểm tra xem đã có chưa (`java -version`, `sdkmanager --list_installed`, `adb version`...). Chỉ cài phần còn thiếu, và liệt kê những gì đã cài ở cuối mỗi giai đoạn.
+- Phiên bản thư viện/plugin: dùng bản stable mới nhất tương thích với nhau, quản lý tập trung bằng `gradle/libs.versions.toml` (version catalog). Không tự nhớ phiên bản từ trí nhớ; hãy tra trên Maven Central/Google Maven hoặc để Android Studio/Gradle gợi ý, và ghi lại phiên bản đã chọn.
+- Không cài công cụ lạ ngoài danh sách dưới đây nếu chưa hỏi tôi.
+- Mọi mã BIN ngân hàng, package name, deep link, mẫu thông báo: chỉ điền khi chắc chắn, còn lại để `// TODO: verify`. Nếu có `adb` và máy thật kết nối, hãy kiểm tra package name thật bằng `adb shell pm list packages`.
+
+# MÔI TRƯỜNG & CÔNG CỤ CẦN CÀI THÊM (AGENT TỰ KIỂM TRA VÀ CÀI NẾU THIẾU)
+## Toolchain
+- JDK 17 (hoặc phiên bản JDK mà AGP yêu cầu).
+- Android SDK: `platform-tools` (adb), `platforms;android-35`, `build-tools` bản mới nhất tương thích, `cmdline-tools`. Chấp nhận license (`sdkmanager --licenses`).
+- Gradle Wrapper (dùng `./gradlew`, không phụ thuộc Gradle cài sẵn trên máy).
+- Android Studio là tuỳ chọn; mọi thứ phải build được bằng dòng lệnh: `./gradlew assembleDebug`, `./gradlew testDebugUnitTest`, `./gradlew lint`.
+- Emulator không bắt buộc. Nếu cần test trên máy thật: hướng dẫn tôi bật Tuỳ chọn nhà phát triển trên Xiaomi 15, bật "Gỡ lỗi USB", "Cài đặt qua USB" và "Gỡ lỗi USB (Cài đặt bảo mật)" (Xiaomi yêu cầu riêng mục này), rồi kết nối bằng USB hoặc "Gỡ lỗi không dây".
+
+## Gradle plugin
+- `com.android.application`
+- `org.jetbrains.kotlin.android`
+- `org.jetbrains.kotlin.plugin.compose` (Compose compiler plugin theo phiên bản Kotlin đang dùng)
+- `com.google.devtools.ksp` (cho Room và Hilt)
+- `com.google.dagger.hilt.android`
+- `org.jetbrains.kotlin.plugin.serialization` (đọc JSON danh sách ngân hàng)
+
+## Thư viện (dependencies)
+- Compose: BOM, `material3`, `ui-tooling`, `navigation-compose`, `lifecycle-runtime-compose`, `lifecycle-viewmodel-compose`, `material-icons-extended`.
+- Room: `room-runtime`, `room-ktx`, `room-compiler` (qua KSP).
+- Hilt: `hilt-android`, `hilt-compiler` (KSP), `hilt-navigation-compose`.
+- DataStore Preferences, WorkManager (`work-runtime-ktx`).
+- CameraX: `camera-core`, `camera-camera2`, `camera-lifecycle`, `camera-view`.
+- Quét QR: `com.google.zxing:core` làm lựa chọn chính (không phụ thuộc Google). ML Kit chỉ dùng bản **bundled** `com.google.mlkit:barcode-scanning`, tuyệt đối không dùng bản `play-services-*`, và nếu thấy không chạy ổn trên máy không có GMS thì bỏ hẳn.
+- Biometric: `androidx.biometric`.
+- `kotlinx-serialization-json`, `kotlinx-coroutines-android`.
+- Biểu đồ: tự vẽ bằng Compose Canvas hoặc dùng thư viện thuần Compose không phụ thuộc GMS (nêu rõ lựa chọn).
+- Test: `junit`, `kotlinx-coroutines-test`, `mockk`, `turbine`, `androidx.room:room-testing`, `androidx.test.ext:junit`.
+- KHÔNG thêm: Firebase, Google Play Services, Play Billing, Crashlytics, bất kỳ SDK analytics/quảng cáo nào.
+
+# THIẾT BỊ MỤC TIÊU & RÀNG BUỘC
+- Thiết bị: Xiaomi 15 bản nội địa Trung Quốc, HyperOS 2 (Android 15). **Mặc định coi như không có Google Play Services, không có Play Store, không có FCM.**
+- App phát hành dạng APK cài trực tiếp (sideload). Hướng dẫn tôi build và ký APK (debug và release với keystore tự tạo).
+- minSdk 26, targetSdk 35. Giao diện tiếng Việt, tiền VND (ví dụ 1.250.000 ₫), múi giờ Asia/Ho_Chi_Minh.
+- Dữ liệu lưu hoàn toàn offline trên máy. Không khai báo quyền INTERNET nếu không thật sự cần.
+
+# KIẾN TRÚC
+Kotlin, Jetpack Compose + Material 3, MVVM + Clean Architecture đơn giản, Room, Hilt, Coroutines/Flow, DataStore, WorkManager, Navigation Compose.
+Package: `data` (Room, repository), `domain` (model, use case), `ui` (screens, ViewModel), `qr` (EMVCo parser, CRC, bank registry), `notification` (listener, parsers), `bank` (deep link builder, app detector).
+
+# CHỨC NĂNG 1: QUÉT QR CHUYỂN KHOẢN VÀ CHUYỂN SANG APP NGÂN HÀNG
+## 1.1 Quét và giải mã QR
+- Màn hình quét bằng camera (đèn flash, chọn ảnh QR từ thư viện).
+- Parse chuẩn EMVCo/VietQR (TLV: tag 2 ký tự + length 2 ký tự + value):
+  - Tag 00 (version), 01 (11 = tĩnh, 12 = động; kiểm tra lại theo chuẩn), 38 (Merchant Account Information VietQR/NAPAS) với sub-tag 00 = GUID `A000000727`, 01 = chứa sub 00 là **BIN ngân hàng** và sub 01 là **số tài khoản hoặc số thẻ**, 02 = service code (`QRIBFTTA` = tới tài khoản, `QRIBFTTC` = tới thẻ).
+  - Tag 53 (704 = VND), 54 (số tiền, có thể không có), 58 (VN), 59 (tên người nhận), 60 (thành phố), 62 (Additional Data; sub 08 = nội dung chuyển khoản, 01 = mã hoá đơn).
+  - Tag 63: kiểm tra CRC16/CCITT-FALSE (poly 0x1021, init 0xFFFF). Sai CRC thì báo "QR không hợp lệ".
+- Ánh xạ BIN → ngân hàng (tên, mã viết tắt, package name app, mã `app` của VietQR deep link) lưu trong JSON ở assets để dễ cập nhật. Tối thiểu: Vietcombank, VietinBank, BIDV, Agribank, Techcombank, MB, ACB, VPBank, TPBank, Sacombank, HDBank, VIB, SHB, OCB, MSB, SeABank, LPBank, Eximbank, Nam A Bank, Bac A Bank, ABBank, BVBank, Cake, Timo, Ubank, Kienlongbank, NCB, PVcomBank, Viet Capital Bank. Chỗ nào chưa chắc đánh dấu `// TODO: verify`.
+- QR không phải VietQR (ví khác, QR lạ): hiện thông báo rõ ràng, không crash.
+
+## 1.2 Màn hình xác nhận
+- Hiển thị ngân hàng nhận, số tài khoản, tên người nhận, số tiền, nội dung.
+- QR chưa có số tiền: cho nhập (bàn phím số, tự định dạng dấu chấm nghìn).
+- Cho sửa nội dung, chọn danh mục (gợi ý theo lịch sử người nhận), ghi chú.
+- Chọn **app ngân hàng của tôi** để chuyển: chỉ liệt kê các app đang cài (PackageManager), khai báo `<queries>` trong AndroidManifest cho các package name (bắt buộc từ Android 11). Nhớ lựa chọn mặc định.
+
+## 1.3 Chuyển sang app ngân hàng
+Tạo thông tin chuyển khoản (BIN, số TK, số tiền, nội dung) và mở app đã chọn theo thứ tự ưu tiên:
+1. Deep link VietQR `https://dl.vietqr.io/pay?app=<mã_app>&ba=<số_TK>@<mã_NH>&am=<số_tiền>&tn=<nội_dung>&bn=<tên>` (URL-encode đúng), kèm đặt package đích trong Intent để mở thẳng app đã chọn.
+2. Deep link riêng của ngân hàng (nếu có và đã xác minh).
+3. Dự phòng: copy số tài khoản vào clipboard, mở app bằng launch intent, hiện hướng dẫn "Đã sao chép số tài khoản, hãy dán vào ô người nhận".
+- Xử lý lỗi: app chưa cài, deep link không được hỗ trợ, bị chặn mở app.
+- Lưu ý: mỗi app ngân hàng xử lý deep link khác nhau, có app không tự điền số tiền hoặc nội dung. Hiển thị rõ số tiền/nội dung cần nhập tay khi phải dùng phương án dự phòng.
+
+## 1.4 Quay lại app và ghi nhận chi tiêu
+- Trước khi chuyển app, lưu "giao dịch chờ xác nhận" (PENDING) vào Room.
+- Khi người dùng quay lại app (ProcessLifecycleOwner/onResume), nếu còn PENDING thì hiện dialog "Bạn đã chuyển khoản thành công chưa?" với 3 nút: **Đã chuyển** (ghi thành khoản chi, CONFIRMED), **Chưa chuyển/Huỷ** (xoá), **Hỏi lại sau**.
+- App ngân hàng không trả kết quả giao dịch về app khác, nên **bắt buộc có bước xác nhận của người dùng**. Nếu Chức năng 2 bắt được thông báo trừ tiền khớp số tiền trong vòng 10 phút thì tự xác nhận PENDING đó và không tạo giao dịch trùng.
+- PENDING quá 24 giờ chuyển sang "Cần xem lại" và nhắc nhẹ trong danh sách.
+
+# CHỨC NĂNG 2: TỰ ĐỘNG ĐỌC THÔNG BÁO BIẾN ĐỘNG SỐ DƯ
+- Dùng `NotificationListenerService`. Lần đầu bật, giải thích lý do và mở `Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS` để người dùng cấp quyền.
+- Chỉ xử lý thông báo từ danh sách package app ngân hàng (bật/tắt từng ngân hàng), bỏ qua mọi app khác. Không lưu nội dung thông báo không liên quan, không gửi ra ngoài.
+- Parser theo quy tắc cho từng ngân hàng, mỗi ngân hàng một file/regex riêng, dễ mở rộng, có unit test với nhiều mẫu:
+  - Nhận diện tiền ra (trừ tiền, `-`, "GD:", "giảm", "chuyển tiền đi"...) và tiền vào (cộng tiền, `+`, "tăng", "nhận tiền"...).
+  - Trích số tiền (xử lý `1,250,000 VND`, `1.250.000đ`, `+500,000`), số dư sau giao dịch (nếu có), nội dung, thời gian.
+  - Tiền ra → khoản **chi**; tiền vào → khoản **thu**; gắn nhãn nguồn "Tự động từ thông báo".
+- **Dữ liệu thật**: không tự bịa mẫu thông báo. Dùng mẫu tôi cung cấp; nếu chưa có, viết parser dạng khung kèm test dùng dữ liệu giả ghi rõ là giả, và thêm chế độ **"ghi log thông báo thô"** (chỉ bật khi tôi cho phép, lưu cục bộ, có nút xoá) để tôi thu thập mẫu thật rồi sửa parser.
+- Chống trùng: băm (ngân hàng + số tiền + nội dung + thời gian làm tròn theo phút); đối chiếu với giao dịch từ Chức năng 1.
+- Cài đặt: tự thêm luôn, hoặc đưa vào mục "Chờ duyệt" để xác nhận một chạm.
+- Gợi ý danh mục theo từ khoá/lịch sử, người dùng tự thêm quy tắc.
+- **Lưu ý quan trọng về thông báo trên máy không có GMS**: app ngân hàng Việt Nam thường dùng FCM để đẩy thông báo biến động số dư. Trên bản nội địa không có GMS, thông báo này có thể **không đến**, hoặc đến trễ/không ổn định. Vì vậy:
+  - Thêm màn hình "Kiểm tra thiết lập" giúp tôi xác minh app ngân hàng X có thực sự đẩy thông báo lên máy không.
+  - Thêm **tuỳ chọn dự phòng đọc SMS Banking** (`RECEIVE_SMS`, parser riêng theo đầu số/brandname của ngân hàng), mặc định tắt, giải thích rõ quyền nhạy cảm này.
+  - Thêm nút "Thêm thủ công nhanh" để không phụ thuộc hoàn toàn vào thông báo.
+- Một số app ngân hàng có thể từ chối chạy trên ROM nội địa hoặc APK sideload (kiểm tra tính toàn vẹn thiết bị). Ghi vào danh sách hạn chế để tôi tự kiểm tra từng app.
+
+# TỐI ƯU CHO HYPEROS (CHẠY NỀN ỔN ĐỊNH)
+HyperOS rất hay giết app nền và chặn thông báo. Làm:
+- Màn hình "Hướng dẫn thiết lập cho Xiaomi" khi mở app lần đầu, mỗi bước có nút mở thẳng cài đặt tương ứng: Tự khởi động (Autostart), Tiết kiệm pin → "Không hạn chế", khoá app trong đa nhiệm, quyền Truy cập thông báo, "Hiển thị cửa sổ bật lên khi chạy nền" (cần khi app mở app khác/quay lại từ nền), và **"Cài đặt hạn chế" (Restricted settings)**: với app sideload, Android 13+ có thể chặn cấp quyền Truy cập thông báo/SMS, hướng dẫn vào Thông tin ứng dụng → ⋮ → "Cho phép cài đặt hạn chế" rồi mới cấp quyền.
+- Dùng `requestRebind` khi listener bị ngắt, kiểm tra trạng thái kết nối khi mở app; mất kết nối thì cảnh báo ngay trên màn hình chính.
+- Không dựa vào foreground service để giữ listener sống; dùng cơ chế hệ thống kèm hướng dẫn whitelist ở trên.
+- Intent mở cài đặt của Xiaomi có thể khác AOSP: luôn bọc try/catch và có phương án dự phòng mở trang Thông tin ứng dụng.
+
+# CHỨC NĂNG THU CHI CƠ BẢN
+- Thêm/sửa/xoá khoản thu, chi thủ công: số tiền, loại, danh mục, ví, ngày giờ, ghi chú, nguồn (thủ công/QR/thông báo/SMS).
+- Danh mục mặc định tiếng Việt (Ăn uống, Di chuyển, Nhà ở, Hoá đơn, Mua sắm, Giải trí, Sức khoẻ, Giáo dục, Lương, Thưởng...), tuỳ chỉnh icon/màu.
+- Nhiều ví (Tiền mặt, từng ngân hàng).
+- Tổng quan theo tháng: tổng thu, tổng chi, chênh lệch, biểu đồ theo danh mục, giao dịch gần đây; lọc theo ngày/tháng/danh mục/ví; tìm kiếm.
+- Ngân sách theo danh mục (giai đoạn sau).
+- Xuất/nhập CSV, sao lưu/khôi phục file cục bộ (không dùng cloud Google).
+- Khoá app bằng vân tay/PIN (BiometricPrompt). Dark mode, thao tác một tay.
+
+# CHẤT LƯỢNG & QUYỀN RIÊNG TƯ
+- Unit test: EMVCo parser (QR tĩnh/động, có/không số tiền, CRC sai), CRC16, URL builder deep link, parser thông báo/SMS, logic chống trùng, luồng PENDING.
+- Xử lý quyền runtime (camera) đúng cách, có trạng thái lỗi/rỗng, không crash với dữ liệu bất thường.
+- Không analytics, không gửi dữ liệu ra ngoài. Không ghi số tài khoản/nội dung giao dịch vào log hệ thống ở bản release.
+- Dữ liệu tài chính nhạy cảm: cân nhắc mã hoá DB (ví dụ SQLCipher, nếu thêm thì nêu rõ) hoặc ít nhất loại app khỏi sao lưu tự động của hệ thống (`allowBackup=false` hoặc rules phù hợp).
+
+# LỘ TRÌNH
+0. Kiểm tra/cài môi trường (JDK, SDK, adb), tạo dự án, version catalog, cấu hình Gradle plugin.
+1. Kiến trúc, Room, màn hình thu chi thủ công.
+2. EMVCo/VietQR parser + bank registry + unit test.
+3. Quét QR + màn hình xác nhận + mở app ngân hàng + luồng PENDING.
+4. NotificationListenerService + parser + chống trùng + "Chờ duyệt" + kiểm tra thiết lập + SMS dự phòng.
+5. Hướng dẫn thiết lập HyperOS, thống kê/biểu đồ, CSV, khoá app.
+
+# ĐẦU RA YÊU CẦU
+- Mã nguồn Android Studio hoàn chỉnh (Gradle Kotlin DSL), build được bằng `./gradlew assembleDebug`.
+- File `SETUP.md`: danh sách công cụ/plugin đã cài thêm trên máy kèm phiên bản, cách build/ký APK, cách cài lên Xiaomi 15 qua adb (`adb install -r`).
+- File `TESTING.md`: cách test từng tính năng trên Xiaomi 15, gồm cách giả lập thông báo kiểm tra parser bằng `adb shell cmd notification post` và cách kiểm tra deep link bằng `adb shell am start -a android.intent.action.VIEW -d "<url>"`.
+- Danh sách mọi mục `// TODO: verify` (BIN, package name, deep link, mẫu thông báo) để tôi kiểm tra.
+- Danh sách hạn chế đã biết.

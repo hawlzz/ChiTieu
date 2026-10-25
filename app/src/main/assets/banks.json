@@ -1,0 +1,765 @@
+[
+  {
+    "bin": "970415",
+    "packageName": "com.vietinbank.ipay",
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. Package: developer Google Play listing.",
+    "code": "ICB",
+    "aliases": [],
+    "appId": "icb",
+    "shortName": "VietinBank",
+    "name": "Ngân hàng TMCP Công thương Việt Nam"
+  },
+  {
+    "bin": "970436",
+    "packageName": "com.VCB",
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. Package: developer Google Play listing.",
+    "code": "VCB",
+    "aliases": [],
+    "appId": "vcb",
+    "shortName": "Vietcombank",
+    "name": "Ngân hàng TMCP Ngoại Thương Việt Nam"
+  },
+  {
+    "bin": "970418",
+    "packageName": "com.vnpay.bidv",
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. Package: developer Google Play listing.",
+    "code": "BIDV",
+    "aliases": [],
+    "appId": "bidv",
+    "shortName": "BIDV",
+    "name": "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam"
+  },
+  {
+    "bin": "970405",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VBA",
+    "aliases": [],
+    "appId": "vba",
+    "shortName": "Agribank",
+    "name": "Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam"
+  },
+  {
+    "bin": "970448",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "OCB",
+    "aliases": [],
+    "appId": "ocb",
+    "shortName": "OCB",
+    "name": "Ngân hàng TMCP Phương Đông"
+  },
+  {
+    "bin": "970422",
+    "packageName": "com.mbmobile",
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. Package: developer Google Play listing.",
+    "code": "MB",
+    "aliases": [],
+    "appId": "mb",
+    "shortName": "MBBank",
+    "name": "Ngân hàng TMCP Quân đội"
+  },
+  {
+    "bin": "970407",
+    "packageName": "vn.com.techcombank.bb.app",
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. Package: developer Google Play listing.",
+    "code": "TCB",
+    "aliases": [],
+    "appId": "tcb",
+    "shortName": "Techcombank",
+    "name": "Ngân hàng TMCP Kỹ thương Việt Nam"
+  },
+  {
+    "bin": "970416",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "ACB",
+    "aliases": [],
+    "appId": "acb",
+    "shortName": "ACB",
+    "name": "Ngân hàng TMCP Á Châu"
+  },
+  {
+    "bin": "970432",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VPB",
+    "aliases": [],
+    "appId": "vpb",
+    "shortName": "VPBank",
+    "name": "Ngân hàng TMCP Việt Nam Thịnh Vượng"
+  },
+  {
+    "bin": "970423",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "TPB",
+    "aliases": [],
+    "appId": "tpb",
+    "shortName": "TPBank",
+    "name": "Ngân hàng TMCP Tiên Phong"
+  },
+  {
+    "bin": "970403",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "STB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "Sacombank",
+    "name": "Ngân hàng TMCP Sài Gòn Tài Lộc"
+  },
+  {
+    "bin": "970437",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "HDB",
+    "aliases": [],
+    "appId": "hdb",
+    "shortName": "HDBank",
+    "name": "Ngân hàng TMCP Phát triển Thành phố Hồ Chí Minh"
+  },
+  {
+    "bin": "970454",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VCCB",
+    "aliases": [
+      "Viet Capital Bank",
+      "VietCapitalBank"
+    ],
+    "appId": null,
+    "shortName": "BVBank",
+    "name": "Ngân hàng TMCP Bản Việt"
+  },
+  {
+    "bin": "970429",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "SCB",
+    "aliases": [],
+    "appId": "scb",
+    "shortName": "SCB",
+    "name": "Ngân hàng TMCP Sài Gòn"
+  },
+  {
+    "bin": "970441",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VIB",
+    "aliases": [],
+    "appId": "vib",
+    "shortName": "VIB",
+    "name": "Ngân hàng TMCP Quốc tế Việt Nam"
+  },
+  {
+    "bin": "970443",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "SHB",
+    "aliases": [],
+    "appId": "shb",
+    "shortName": "SHB",
+    "name": "Ngân hàng TMCP Sài Gòn - Hà Nội"
+  },
+  {
+    "bin": "970431",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "EIB",
+    "aliases": [],
+    "appId": "eib",
+    "shortName": "Eximbank",
+    "name": "Ngân hàng TMCP Xuất Nhập khẩu Việt Nam"
+  },
+  {
+    "bin": "970426",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "MSB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "MSB",
+    "name": "Ngân hàng TMCP Hàng Hải"
+  },
+  {
+    "bin": "546034",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "CAKE",
+    "aliases": [],
+    "appId": "cake",
+    "shortName": "CAKE",
+    "name": "TMCP Việt Nam Thịnh Vượng - Ngân hàng số CAKE by VPBank"
+  },
+  {
+    "bin": "546035",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "Ubank",
+    "aliases": [],
+    "appId": null,
+    "shortName": "Ubank",
+    "name": "TMCP Việt Nam Thịnh Vượng - Ngân hàng số Ubank by VPBank"
+  },
+  {
+    "bin": "963388",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "TIMO",
+    "aliases": [],
+    "appId": "timo",
+    "shortName": "Timo",
+    "name": "Ngân hàng số Timo by Ban Viet Bank (Timo by Ban Viet Bank)"
+  },
+  {
+    "bin": "971005",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VTLMONEY",
+    "aliases": [],
+    "appId": null,
+    "shortName": "ViettelMoney",
+    "name": "Tổng Công ty Dịch vụ số Viettel - Chi nhánh tập đoàn công nghiệp viễn thông Quân Đội"
+  },
+  {
+    "bin": "971011",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VNPTMONEY",
+    "aliases": [],
+    "appId": null,
+    "shortName": "VNPTMoney",
+    "name": "Trung tâm dịch vụ tài chính số VNPT- Chi nhánh Tổng công ty truyền thông (VNPT Fintech)"
+  },
+  {
+    "bin": "970400",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "SGICB",
+    "aliases": [],
+    "appId": "sgicb",
+    "shortName": "SaigonBank",
+    "name": "Ngân hàng TMCP Sài Gòn Công Thương"
+  },
+  {
+    "bin": "970409",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "BAB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "BacABank",
+    "name": "Ngân hàng TMCP Bắc Á"
+  },
+  {
+    "bin": "971133",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "PVDB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "PVcomBank Pay",
+    "name": "Ngân hàng số PVcomBank"
+  },
+  {
+    "bin": "971025",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "momo",
+    "aliases": [],
+    "appId": null,
+    "shortName": "MoMo",
+    "name": "CTCP Dịch Vụ Di Động Trực Tuyến"
+  },
+  {
+    "bin": "970412",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "PVCB",
+    "aliases": [],
+    "appId": "pvcb",
+    "shortName": "PVcomBank",
+    "name": "Ngân hàng TMCP Đại Chúng Việt Nam"
+  },
+  {
+    "bin": "970414",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "MBV",
+    "aliases": [],
+    "appId": null,
+    "shortName": "MBV",
+    "name": "Ngân hàng TNHH MTV Việt Nam Hiện Đại"
+  },
+  {
+    "bin": "970419",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "NCB",
+    "aliases": [],
+    "appId": "ncb",
+    "shortName": "NCB",
+    "name": "Ngân hàng TMCP Quốc Dân"
+  },
+  {
+    "bin": "970424",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "SHBVN",
+    "aliases": [],
+    "appId": "shbvn",
+    "shortName": "ShinhanBank",
+    "name": "Ngân hàng TNHH MTV Shinhan Việt Nam"
+  },
+  {
+    "bin": "970425",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "ABB",
+    "aliases": [],
+    "appId": "abb",
+    "shortName": "ABBANK",
+    "name": "Ngân hàng TMCP An Bình"
+  },
+  {
+    "bin": "970427",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VAB",
+    "aliases": [],
+    "appId": "vab",
+    "shortName": "VietABank",
+    "name": "Ngân hàng TMCP Việt Á"
+  },
+  {
+    "bin": "970428",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "NAB",
+    "aliases": [],
+    "appId": "nab",
+    "shortName": "NamABank",
+    "name": "Ngân hàng TMCP Nam Á"
+  },
+  {
+    "bin": "970430",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "PGB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "PGBank",
+    "name": "Ngân hàng TMCP Thịnh vượng và Phát triển"
+  },
+  {
+    "bin": "970433",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VIETBANK",
+    "aliases": [],
+    "appId": null,
+    "shortName": "VietBank",
+    "name": "Ngân hàng TMCP Việt Nam Thương Tín"
+  },
+  {
+    "bin": "970438",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "BVB",
+    "aliases": [],
+    "appId": "bvb",
+    "shortName": "BaoVietBank",
+    "name": "Ngân hàng TMCP Bảo Việt"
+  },
+  {
+    "bin": "970440",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "SEAB",
+    "aliases": [],
+    "appId": "seab",
+    "shortName": "SeABank",
+    "name": "Ngân hàng TMCP Đông Nam Á"
+  },
+  {
+    "bin": "970446",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "COOPBANK",
+    "aliases": [],
+    "appId": "coopbank",
+    "shortName": "COOPBANK",
+    "name": "Ngân hàng Hợp tác xã Việt Nam"
+  },
+  {
+    "bin": "970449",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "LPB",
+    "aliases": [],
+    "appId": "lpb",
+    "shortName": "LPBank",
+    "name": "Ngân hàng TMCP Lộc Phát Việt Nam"
+  },
+  {
+    "bin": "970452",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "KLB",
+    "aliases": [],
+    "appId": "klb",
+    "shortName": "KienLongBank",
+    "name": "Ngân hàng TMCP Kiên Long"
+  },
+  {
+    "bin": "668888",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "KBank",
+    "aliases": [],
+    "appId": null,
+    "shortName": "KBank",
+    "name": "Ngân hàng Đại chúng TNHH Kasikornbank"
+  },
+  {
+    "bin": "970466",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "KEBHANAHCM",
+    "aliases": [],
+    "appId": null,
+    "shortName": "KEBHanaHCM",
+    "name": "Ngân hàng KEB Hana – Chi nhánh Thành phố Hồ Chí Minh"
+  },
+  {
+    "bin": "970467",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "KEBHANAHN",
+    "aliases": [],
+    "appId": null,
+    "shortName": "KEBHANAHN",
+    "name": "Ngân hàng KEB Hana – Chi nhánh Hà Nội"
+  },
+  {
+    "bin": "977777",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "MAFC",
+    "aliases": [],
+    "appId": null,
+    "shortName": "MAFC",
+    "name": "Công ty Tài chính TNHH MTV Mirae Asset (Việt Nam) "
+  },
+  {
+    "bin": "999888",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VBSP",
+    "aliases": [],
+    "appId": null,
+    "shortName": "VBSP",
+    "name": "Ngân hàng Chính sách Xã hội"
+  },
+  {
+    "bin": "963668",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "BNP HN",
+    "aliases": [],
+    "appId": null,
+    "shortName": "BNP HN",
+    "name": "Ngân hàng BNP Paribas – Chi nhánh Hà Nội"
+  },
+  {
+    "bin": "555666",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "BIDC",
+    "aliases": [],
+    "appId": null,
+    "shortName": "BIDC",
+    "name": "Ngân hàng Đầu Tư Và Phát Triển Campuchia - Chi nhánh Hà Nội"
+  },
+  {
+    "bin": "963666",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "BNP HCM",
+    "aliases": [],
+    "appId": null,
+    "shortName": "BNP HCM",
+    "name": "Ngân hàng BNP Paribas – Chi nhánh Thành phố Hồ Chí Minh"
+  },
+  {
+    "bin": "971101",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "ZALOPAY",
+    "aliases": [],
+    "appId": null,
+    "shortName": "ZaloPay",
+    "name": "Ví điện tử ZaloPay"
+  },
+  {
+    "bin": "963688",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "BOCHK",
+    "aliases": [],
+    "appId": null,
+    "shortName": "BOCHK",
+    "name": "Ngân hàng Bank of China (Hong Kong) Limited – Chi nhánh Hồ Chí Minh"
+  },
+  {
+    "bin": "970465",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "BSP",
+    "aliases": [],
+    "appId": null,
+    "shortName": "BSP",
+    "name": "Ngân hàng SinoPac - Chi nhánh Thành phố Hồ Chí Minh"
+  },
+  {
+    "bin": "168999",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "CUBHCM",
+    "aliases": [],
+    "appId": null,
+    "shortName": "CUBHCM",
+    "name": "Ngân hàng Cathay United Bank – Chi nhánh Hồ Chí Minh"
+  },
+  {
+    "bin": "963686",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "ESUN",
+    "aliases": [],
+    "appId": null,
+    "shortName": "ESUN",
+    "name": "Ngân hàng Thương mại TNHH E.SUN – Chi nhánh Đồng Nai (ESUNBANK)"
+  },
+  {
+    "bin": "963669",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "ICBC",
+    "aliases": [],
+    "appId": null,
+    "shortName": "ICBC",
+    "name": "Ngân hàng Công thương Trung Quốc – Chi nhánh thành phố Hà Nội"
+  },
+  {
+    "bin": "971032",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "MVAS",
+    "aliases": [],
+    "appId": null,
+    "shortName": "MVAS",
+    "name": "Trung tâm Dịch vụ số Mobifone – Chi nhánh Tổng Công ty viễn thông Mobifone"
+  },
+  {
+    "bin": "963326",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "TNEX",
+    "aliases": [],
+    "appId": null,
+    "shortName": "TNEX",
+    "name": "TNEX by MSB"
+  },
+  {
+    "bin": "458761",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "HSBC",
+    "aliases": [],
+    "appId": null,
+    "shortName": "HSBC",
+    "name": "Ngân hàng TNHH MTV HSBC (Việt Nam)"
+  },
+  {
+    "bin": "970442",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "HLBVN",
+    "aliases": [],
+    "appId": null,
+    "shortName": "HongLeong",
+    "name": "Ngân hàng TNHH MTV Hong Leong Việt Nam"
+  },
+  {
+    "bin": "970455",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "IBK - HN",
+    "aliases": [],
+    "appId": null,
+    "shortName": "IBKHN",
+    "name": "Ngân hàng Công nghiệp Hàn Quốc - Chi nhánh Hà Nội"
+  },
+  {
+    "bin": "970456",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "IBK - HCM",
+    "aliases": [],
+    "appId": null,
+    "shortName": "IBKHCM",
+    "name": "Ngân hàng Công nghiệp Hàn Quốc - Chi nhánh TP. Hồ Chí Minh"
+  },
+  {
+    "bin": "970434",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "IVB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "IndovinaBank",
+    "name": "Ngân hàng TNHH Indovina"
+  },
+  {
+    "bin": "970406",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "Vikki",
+    "aliases": [],
+    "appId": null,
+    "shortName": "Vikki",
+    "name": "Ngân hàng TNHH Một thành viên số Vikki"
+  },
+  {
+    "bin": "801011",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "NHB HN",
+    "aliases": [],
+    "appId": null,
+    "shortName": "Nonghyup",
+    "name": "Ngân hàng Nonghyup - Chi nhánh Hà Nội"
+  },
+  {
+    "bin": "796500",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "DBS",
+    "aliases": [],
+    "appId": null,
+    "shortName": "DBSBank",
+    "name": "DBS Bank Ltd - Chi nhánh Thành phố Hồ Chí Minh"
+  },
+  {
+    "bin": "970439",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "PBVN",
+    "aliases": [],
+    "appId": "pbvn",
+    "shortName": "PublicBank",
+    "name": "Ngân hàng TNHH MTV Public Việt Nam"
+  },
+  {
+    "bin": "970410",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "SCVN",
+    "aliases": [],
+    "appId": null,
+    "shortName": "StandardChartered",
+    "name": "Ngân hàng TNHH MTV Standard Chartered Bank Việt Nam"
+  },
+  {
+    "bin": "533948",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "CITIBANK",
+    "aliases": [],
+    "appId": null,
+    "shortName": "Citibank",
+    "name": "Ngân hàng Citibank, N.A. - Chi nhánh Hà Nội"
+  },
+  {
+    "bin": "422589",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "CIMB",
+    "aliases": [],
+    "appId": "cimb",
+    "shortName": "CIMB",
+    "name": "Ngân hàng TNHH MTV CIMB Việt Nam"
+  },
+  {
+    "bin": "970458",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "UOB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "UnitedOverseas",
+    "name": "Ngân hàng United Overseas - Chi nhánh TP. Hồ Chí Minh"
+  },
+  {
+    "bin": "970444",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "CBB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "CBBank",
+    "name": "Ngân hàng Thương mại trách nhiệm hữu hạn một thành viên Ngoại thương Công nghệ số (Vietcombank Neo Limited)"
+  },
+  {
+    "bin": "970408",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "GPB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "GPBank",
+    "name": "Ngân hàng Thương mại TNHH MTV Dầu Khí Toàn Cầu"
+  },
+  {
+    "bin": "970421",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "VRB",
+    "aliases": [],
+    "appId": null,
+    "shortName": "VRB",
+    "name": "Ngân hàng Liên doanh Việt - Nga"
+  },
+  {
+    "bin": "970457",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "WVN",
+    "aliases": [],
+    "appId": "wvn",
+    "shortName": "Woori",
+    "name": "Ngân hàng TNHH MTV Woori Việt Nam"
+  },
+  {
+    "bin": "970462",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "KBHN",
+    "aliases": [],
+    "appId": null,
+    "shortName": "KookminHN",
+    "name": "Ngân hàng Kookmin - Chi nhánh Hà Nội"
+  },
+  {
+    "bin": "970463",
+    "packageName": null,
+    "verification": "BIN/code: api.vietqr.io/v2/banks, 2026-10-25. // TODO: verify package on Xiaomi, bank-specific links, real notification/SMS templates. // TODO: verify packageName (null, disabled until verified).",
+    "code": "KBHCM",
+    "aliases": [],
+    "appId": null,
+    "shortName": "KookminHCM",
+    "name": "Ngân hàng Kookmin - Chi nhánh Thành phố Hồ Chí Minh"
+  }
+]
