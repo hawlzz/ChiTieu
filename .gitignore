@@ -13,3 +13,11 @@ local.properties
 
 # Local Android Studio state
 .idea/
+
+# Local UI evidence and private signing material
+/UI-REPORT.md
+/design/REVIEW.html
+/design/performance-summary.json
+*.p12
+*signing*.properties
+*.idsig

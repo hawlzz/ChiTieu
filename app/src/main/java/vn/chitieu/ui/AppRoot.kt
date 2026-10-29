@@ -33,22 +33,26 @@ object NavigationInbox {val screen=kotlinx.coroutines.flow.MutableStateFlow<Stri
  LaunchedEffect(requested){requested?.let {NavigationInbox.screen.value=null;nav.navigate(it){launchSingleTop=true}}}
  LaunchedEffect(Unit){vm.message.collect {message->if(message.isNotBlank()){snackbar.showSnackbar(message,actionLabel="Đóng");vm.message.value=""}}}
  LaunchedEffect(Unit){vn.chitieu.notification.IngestEvents.events.collect {event->if(snackbar.showSnackbar("Đã ghi nhận giao dịch",actionLabel="Hoàn tác")==SnackbarResult.ActionPerformed)vm.work {val current=vm.repo.dao.get(event.id);if(current?.status==Status.CONFIRMED)vm.repo.dao.save(current.copy(status=event.previousStatus?:Status.APPROVAL))}}}
+ if(settings.loaded&&!settings.onboarded){WelcomeScreen {setup->vm.work {vm.preferences.flag("onboarded",true)};if(setup)nav.navigate("settings")};return}
  val destination=nav.currentBackStackEntryAsState().value?.destination?.route.orEmpty()
  Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
-  Column(Modifier.fillMaxSize()) {
+  Box(Modifier.fillMaxSize()) {
    if(settings.enabled.isNotEmpty()&&!connected)TextButton(onClick={nav.navigate("settings")}){Text("Đọc thông báo bị ngắt · Sửa",color=MaterialTheme.colorScheme.error)}
-   Box(Modifier.weight(1f)){NavHost(navController=nav,startDestination="ledger") {
+   Box(Modifier.fillMaxSize().glassContentSource().padding(top=if(settings.enabled.isNotEmpty()&&!connected)48.dp else 0.dp)){NavHost(navController=nav,startDestination="ledger") {
     composable("ledger"){LedgerScreen(vm,onScan={nav.navigate("scan")},onReceipt={pick()},onHistory={nav.navigate("transactions")})}
     composable("transactions"){LedgerScreen(vm,details=true,onScan={nav.navigate("scan")},onReceipt={pick()})}
     composable("scan"){ScannerScreen(onResult={qrText=kotlinx.serialization.json.Json.encodeToString(it);nav.navigate("confirm")},onBack={nav.popBackStack()})}
     composable("confirm"){qr?.let {ConfirmQrScreen(it,vm,vm.registry,onBack={nav.popBackStack()},onOpened={nav.popBackStack("ledger",false)})}?:TextButton(onClick={nav.navigate("scan")}){Text("Quét lại QR")}}
     composable("receipt"){ReceiptScreen(vm,onChoose={pick(vm.receiptTarget.value)},onDone={nav.navigate("ledger"){popUpTo("ledger"){inclusive=true}}})}
-    composable("settings"){SettingsScreen(vm,onAdvanced={nav.navigate("advanced")})}
+    composable("welcome"){WelcomeScreen {setup->if(setup)nav.navigate("settings") else nav.popBackStack()}}
+    composable("settings"){SettingsScreen(vm,onAdvanced={nav.navigate("advanced")},onWelcome={nav.navigate("welcome")})}
     composable("advanced"){SettingsScreen(vm,advanced=true,onAdvanced={nav.popBackStack()})}
    }}
-   Box(Modifier.onSizeChanged {bottomHeight=it.height}) {GlassBottomBar(if(destination=="transactions")1 else if(destination in listOf("settings","advanced"))2 else 0){index->nav.navigate(listOf("ledger","transactions","settings")[index]){popUpTo("ledger"){saveState=true};launchSingleTop=true;restoreState=true}}}
+   if(destination in listOf("ledger","transactions","settings","advanced"))Box(Modifier.align(androidx.compose.ui.Alignment.BottomCenter).onSizeChanged {bottomHeight=it.height}) {GlassBottomBar(if(destination=="transactions")1 else if(destination in listOf("settings","advanced"))2 else 0){index->nav.navigate(listOf("ledger","transactions","settings")[index]){popUpTo("ledger"){saveState=true};launchSingleTop=true;restoreState=true}}}
   }
   SnackbarHost(snackbar,Modifier.align(androidx.compose.ui.Alignment.BottomCenter).padding(bottom=with(density){bottomHeight.toDp()}))
  }
- pending?.let {e->GlassDialog(onDismiss={pending=null}) {Text("Bạn đã chuyển khoản chưa?",style=MaterialTheme.typography.titleLarge);Text(Money.format(e.amount)+" → "+e.recipient);Text("Kiểm tra kết quả trong app ngân hàng trước khi xác nhận.");GlassButton("Đọc ảnh biên lai",onClick={pick(e.id)});TextButton(onClick={vm.work {vm.repo.confirm(e.id)};pending=null}){Text("Đã chuyển")};TextButton(onClick={vm.delete(e.id);pending=null}){Text("Chưa chuyển / Huỷ")};TextButton(onClick={pending=null}){Text("Hỏi lại sau")}}}
+ pending?.let {e->PendingTransferSheet(e,onReceipt={pick(e.id)},onConfirmed={vm.work {vm.repo.confirm(e.id)};pending=null},onCancelled={vm.delete(e.id);pending=null},onLater={pending=null})}
+}
+@Composable fun PendingTransferSheet(entry:Entry,onReceipt:()->Unit,onConfirmed:()->Unit,onCancelled:()->Unit,onLater:()->Unit){GlassBottomSheet(onLater){Column(Modifier.padding(GlassTokens.margin),verticalArrangement=Arrangement.spacedBy(GlassTokens.gap)){Text("Bạn đã chuyển khoản chưa?",style=MaterialTheme.typography.titleLarge);AmountText(entry.amount);Text("Đến "+entry.recipient);Text("Kiểm tra kết quả trong app ngân hàng trước khi xác nhận.",style=MaterialTheme.typography.bodySmall);PillButton("Đã chuyển",onConfirmed,Modifier.fillMaxWidth());PillButton("Chưa chuyển / Huỷ",onCancelled,Modifier.fillMaxWidth(),primary=false);TextButton(onClick=onReceipt){Text("Đọc ảnh biên lai")};TextButton(onClick=onLater){Text("Hỏi lại sau")}}}
 }

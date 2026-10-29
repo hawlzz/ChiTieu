@@ -1,5 +1,11 @@
 package vn.chitieu.ui
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -13,7 +19,7 @@ import vn.chitieu.ui.theme.*
 import java.time.*
 @Composable fun ReceiptScreen(vm:LedgerViewModel,onChoose:()->Unit,onDone:()->Unit) {
  val state by vm.receiptState.collectAsStateWithLifecycle();val categories by vm.categories.collectAsStateWithLifecycle();val wallets by vm.wallets.collectAsStateWithLifecycle();val settings by vm.settings.collectAsStateWithLifecycle()
- Column(Modifier.fillMaxSize()) {
+ Column(Modifier.fillMaxSize().padding(horizontal=GlassTokens.margin)) {
   GlassTopBar("Đọc ảnh biên lai","Xử lý trên điện thoại · Luôn kiểm tra trước khi lưu")
   if(state.busy)Column(Modifier.padding(24.dp)){LinearProgressIndicator(Modifier.fillMaxWidth());Text("Đang đọc ảnh…")}
   else if(state.error.isNotBlank())Column(Modifier.padding(24.dp)){Text(state.error);GlassButton("Chọn lại ảnh",onChoose)}
@@ -23,7 +29,8 @@ import java.time.*
    else key(scan.digest) {
     var amount by remember {mutableStateOf(draft.amount.value?.toString().orEmpty())};var name by remember {mutableStateOf(draft.recipient.value.orEmpty())};var account by remember {mutableStateOf(draft.account.value.orEmpty())};var bank by remember {mutableStateOf(draft.recipientBank.value.orEmpty())};var memo by remember {mutableStateOf(draft.memo.value.orEmpty())};var tx by remember {mutableStateOf(draft.transactionId.value.orEmpty())};var time by remember {mutableStateOf(draft.time.value?.let {Instant.ofEpochMilli(it).atZone(VN_ZONE).toLocalDateTime().toString()}.orEmpty())};var category by remember {mutableStateOf("Khác")};var wallet by remember {mutableStateOf(draft.sourceBank.ifBlank {"Ngân hàng"})};var mergeId by remember {mutableStateOf(state.candidates.firstOrNull {it.id==vm.receiptTarget.value}?.id?:state.candidates.firstOrNull()?.id)};var busy by remember {mutableStateOf(false)};var error by remember {mutableStateOf("")};val scope=rememberCoroutineScope()
     LaunchedEffect(Unit){category=vm.repo.suggest(account,memo)}
-    LazyColumn(Modifier.padding(horizontal=20.dp),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=30.dp)) {
+    LazyColumn(Modifier.padding(horizontal=20.dp),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=GlassTokens.bottom)) {
+     item {ReceiptThumbnail(scan.uri)}
      item {GlassCard(Modifier.fillMaxWidth()){Column(Modifier.padding(18.dp)){Text("Giao dịch thành công",style=MaterialTheme.typography.titleLarge);Text("Kiểm tra các ô được nhắc bên dưới, đặc biệt số tiền và người nhận.")}}}
      item {AmountInput(Money.input(amount)?.let {Money.format(it).removeSuffix(" ₫")}?:amount){amount=it.filter(Char::isDigit).take(12)}}
      if(draft.amount.confidence<.8f)item {Text("Cần kiểm tra lại số tiền",color=MaterialTheme.colorScheme.tertiary)}
@@ -44,4 +51,10 @@ import java.time.*
   }
  }
 }
-@Composable private fun ReceiptInput(label:String,value:String,confidence:Float,onChange:(String)->Unit) {OutlinedTextField(value,onChange,label={Text(label)},modifier=Modifier.fillMaxWidth(),supportingText={if(confidence<.8f)Text("Cần kiểm tra lại",color=MaterialTheme.colorScheme.tertiary)},colors=OutlinedTextFieldDefaults.colors(unfocusedBorderColor=if(confidence<.8f)MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outline))}
+@Composable private fun ReceiptInput(label:String,value:String,confidence:Float,onChange:(String)->Unit) {GroupedList {TextField(value,onChange,label={Text(label)},modifier=Modifier.fillMaxWidth(),supportingText={if(confidence<.8f)Text("● Kiểm tra lại",color=MaterialTheme.colorScheme.tertiary)},colors=TextFieldDefaults.colors(focusedContainerColor=MaterialTheme.colorScheme.surface,unfocusedContainerColor=MaterialTheme.colorScheme.surface,unfocusedIndicatorColor=androidx.compose.ui.graphics.Color.Transparent))}}
+@Composable private fun ReceiptThumbnail(uri:String){
+ val context=LocalContext.current
+ val bitmap by produceState<android.graphics.Bitmap?>(null,uri){value=withContext(Dispatchers.IO){runCatching {context.contentResolver.openInputStream(android.net.Uri.parse(uri))?.use {android.graphics.BitmapFactory.decodeStream(it,null,android.graphics.BitmapFactory.Options().apply {inSampleSize=8})}}.getOrNull()}}
+ // Compose may retain the last display list after disposal. Let GC release this sampled thumbnail.
+ bitmap?.let {Image(it.asImageBitmap(),"Ảnh biên lai",Modifier.fillMaxWidth().height(160.dp),contentScale=ContentScale.Fit)}
+}

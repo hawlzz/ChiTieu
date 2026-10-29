@@ -24,6 +24,7 @@ import java.io.File
  override fun onNewIntent(intent:Intent){super.onNewIntent(intent);setIntent(intent);execute(intent)}
  private fun execute(request:Intent){val action=request.getStringExtra("action").orEmpty();val runId=request.getStringExtra("run")?:"latest";require(Regex("[A-Za-z0-9_-]{1,80}").matches(runId))
   lifecycleScope.launch {try {when(action) {
+   "onboarding"->{preferences.flag("onboarded",request.getBooleanExtra("done",true));result(runId,"{\"updated\":true}")}
    "enable-shell"->{TestNotifications.enabled=true;result(runId,"{\"enabled\":true}")}
    "clear"->{repo.dao.all().filter {it.id.startsWith("test-")||it.payerPackage=="com.android.shell"}.forEach {repo.dao.delete(it.id)};result(runId,"{\"clearedSynthetic\":true}")}
    "seed"->{repo.seed();val now=System.currentTimeMillis();repeat(200){i->repo.save(Entry(id="test-seed-"+i,amount=(i+1)*1000L,category=Defaults.categories[i%Defaults.categories.size],createdAt=now-i*60000L,note="[SIMULATED] TEST",kind=if(i%5==0)Kind.INCOME else Kind.EXPENSE))};result(runId,"{\"seeded\":200}")}

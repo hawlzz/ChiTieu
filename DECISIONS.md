@@ -29,3 +29,15 @@ ADB không chạy chuyển tiền. Deep link chỉ mở app. Các thao tác tạ
 Thông báo ngân hàng thật còn thiếu fixture đã xác minh, nên parser sản xuất vẫn trả null. Tự thêm + hoàn tác đã triển khai nhưng thử shell chỉ chứng minh pipeline mẫu, không chứng minh thông báo ngân hàng thật. Force-stop theo Android sẽ dừng component; kiểm tra khôi phục sau mở lại phải phân biệt với sống nền khi không force-stop.
 
 APK release v2 unsigned: 48.769.012 bytes, so với v1 3.537.607 bytes (tăng 45.231.405 bytes cho toàn bộ thay đổi/dependency v2, không phải phép đo riêng ML Kit). Model đóng gói là đánh đổi dung lượng để không cần tải model lúc sử dụng.
+
+## Thiết kế giao diện 29/10/2026
+
+- Giữ Backdrop 2.0.1 đã tích hợp; không nâng thư viện kính chỉ để đổi giao diện. Nguồn https://github.com/Kyant0/AndroidLiquidGlass , Apache-2.0 (THIRD_PARTY_BACKDROP_LICENSE.txt).
+- Font Inter variable tải từ repository google/fonts/ofl/inter, đóng gói offline; SIL OFL 1.1 đính kèm design/INTER-OFL.txt. Nguồn https://github.com/google/fonts/tree/main/ofl/inter . Không dùng SF Pro hoặc Google Fonts runtime.
+- Icon Material Icons Rounded từ dependency androidx.compose.material:material-icons-extended đã có; Apache-2.0, https://github.com/google/material-design-icons/blob/master/LICENSE . Không dùng SF Symbols. Launcher/notification do ChiTieu tự vẽ vector.
+- Dấu + đặt ở header của Tổng quan/Giao dịch; thanh tab chỉ có ba điểm đến. Hàng Thêm nhanh trên Tổng quan giúp tiếp cận bằng nhãn rõ ràng.
+- Nền nhóm đặc giúp nội dung dễ đọc; kính chỉ ở hero/tab/dialog. Không áp dụng kính cho từng giao dịch. Số thu/chi dùng màu đậm hơn trên nền sáng.
+- Giữ cờ onboarded sẵn có trong DataStore; không đổi schema Room hoặc hợp đồng Repository. Người dùng cũ chưa có cờ sẽ thấy chào mừng một lần; xem lại không xoá dữ liệu.
+- Splash dùng AndroidX core-splashscreen 1.2.0 từ Google Maven; Apache-2.0. Theo https://developer.android.com/develop/ui/views/launch/splash-screen/migrate .
+- Android 17 bỏ InputManager.getInstance; bổ sung trực tiếp Espresso 3.7.0 (chỉ androidTest) để tránh dependency 3.6.1 bắc cầu từ Compose test. Nguồn https://developer.android.com/jetpack/androidx/releases/test ; không thay thư viện nghiệp vụ để sửa hạ tầng test.
+- Không thêm GMS/Firebase/network permission. OCR ML Kit bundled từ bản v2 vẫn giữ nguyên; UI không chứng minh toàn bộ OCR chạy không GMS. Giới hạn này được giữ rõ trong OCR-REPORT.md.

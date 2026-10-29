@@ -99,3 +99,9 @@ Debug dùng applicationId vn.chitieu.debug, tách khỏi bản chính. Room tự
 Script PowerShell: scripts/adb_test.ps1 -Serial '<kết nối từ adb devices>'. Kiểm thử Compose/Room: .\gradlew.bat connectedDebugAndroidTest. Cách chuẩn bị môi trường, giới hạn HyperOS và ký release ở SETUP.md. Quyết định engine, dependency Google và minSdk ở DECISIONS.md; thay đổi giao diện ở CHANGELOG.md.
 
 Ảnh nguồn, nhãn, OCR chi tiết và ảnh chụp màn hình chỉ lưu cục bộ, không đưa vào git hoặc APK. Không dùng OCR làm ground truth. Chấm các nhãn được duyệt bằng scripts/score_receipts.py.
+
+## Giao diện mới
+Hệ thống màu/chữ, component và nguyên tắc được mô tả trong [DESIGN.md](DESIGN.md). Xem [design/ICON-OPTIONS.md](design/ICON-OPTIONS.md) cho ba hướng icon. Inter được đóng gói offline (SIL OFL); không cần Google Fonts runtime. Bộ ảnh trước/sau và REVIEW.html dùng đường dẫn cục bộ, không đưa dữ liệu kiểm thử lên GitHub.
+
+## APK release
+APK đã ký được lưu tại [releases/ChiTieu-2.0.0-release.apk](releases/ChiTieu-2.0.0-release.apk); mã SHA-256 đi kèm trong releases/SHA256SUMS.txt. Khoá ký riêng được giữ ngoài repository trên máy phát triển.

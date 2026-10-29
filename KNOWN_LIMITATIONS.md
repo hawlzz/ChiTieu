@@ -25,3 +25,6 @@
 - Thời gian, mã giao dịch và tên có thể thiếu/sai; luôn kiểm tra trước khi lưu. Confidence không phải xác suất.
 - Ảnh lưu tùy chọn chưa có trình xem riêng trong app; metadata có trên giao dịch. Ảnh không đi theo backup; CSV v1 không xuất metadata biên lai. Khôi phục có thể để lại ảnh cũ không còn tham chiếu trong bộ nhớ riêng.
 - Deep link và thông báo ngân hàng thật còn chờ kiểm chứng. Xem TESTING-REPORT.md để biết kết quả thiết bị và các bước bị chặn.
+
+## Giao diện mới
+Ảnh và test bổ sung thực hiện trên Medium Phone API 37.0 (Android 17), không phải Xiaomi/HyperOS thật. Chưa xác minh launcher/themed icon, camera/haptic và tốc độ kính trên Xiaomi 15 không GMS trong lượt này. Cỡ chữ 1.3 có thể làm số tiền xuống hai dòng; danh sách/sheet vẫn có cuộn để tiếp cận hành động. Dùng Giảm hiệu ứng trên máy yếu hoặc khi cuộn chưa mượt. Các parser/thông báo ngân hàng và giới hạn OCR từ bản v2 không thay đổi.

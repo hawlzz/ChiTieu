@@ -19,3 +19,13 @@
 ## Còn cần xác minh
 
 Độ chính xác OCR từng trường cần labels.csv được người dùng duyệt; máy không GMS chưa được thử; parser ngân hàng thật chưa có mẫu. Xem OCR-REPORT.md và TESTING-REPORT.md để phân biệt kết quả thực tế với phần bị chặn.
+
+## Giao diện mới — 29/10/2026
+- Thêm hệ thống màu/chữ Inter đóng gói offline, icon Rounded, component nhóm và kính có giới hạn.
+- Thay thẻ tên app bằng tiêu đề Tổng quan + nút thêm; thêm chọn tháng, swipe tháng, hero Thu/Chi và trạng thái rỗng có hành động.
+- Giao dịch nhóm ngày, tìm kiếm, chip/segment và thao tác vuốt/giữ lâu; giữ xác nhận xoá.
+- Thêm nhanh có bàn phím số, danh mục, ví và ghi chú. QR có khung quét và điều khiển ảnh/đèn; biên lai có thumbnail và gợi ý kiểm tra.
+- Thêm adaptive/round/monochrome launcher, small notification icon, SplashScreen API và ba trang chào mừng có thể xem lại.
+- Giữ Room schema 2, parser, Repository và luồng xác nhận thanh toán; không thêm dữ liệu thật hay quyền mạng.
+
+- Giữ tra cứu đầy đủ thông tin người nhận, nội dung và mã biên lai bằng sheet Chi tiết giao dịch; bổ sung test hồi quy cho metadata.

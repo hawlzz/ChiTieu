@@ -1,5 +1,6 @@
 package vn.chitieu.ui
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,10 +22,10 @@ import vn.chitieu.ui.theme.*
  var payer by remember {mutableStateOf(installed.firstOrNull {it.packageName==settings.defaultBank}?:installed.firstOrNull())}
  var amount by remember {mutableStateOf(qr.amount?.toString()?:"")};var memo by remember {mutableStateOf(qr.memo)};var category by remember {mutableStateOf("Khác")};var wallet by remember {mutableStateOf("Ngân hàng")};var note by remember {mutableStateOf("")};var busy by remember {mutableStateOf(false)};var error by remember {mutableStateOf("")}
  LaunchedEffect(qr.account){category=vm.repo.suggest(qr.account,qr.memo);val selected=vm.preferences.defaultBank(qr.bin);payer=installed.firstOrNull {it.packageName==selected}?:payer;val bankName=vm.registry.byPackage(payer?.packageName.orEmpty())?.shortName;if(bankName!=null){wallet=bankName;vm.repo.dao.saveWallet(vn.chitieu.data.Wallet(bankName))}}
- LazyColumn(Modifier.fillMaxSize().padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+ LazyColumn(Modifier.fillMaxSize().padding(horizontal=GlassTokens.margin),contentPadding=PaddingValues(bottom=GlassTokens.bottom),verticalArrangement=Arrangement.spacedBy(12.dp)) {
   item {GlassTopBar("Xác nhận chuyển khoản")}
-  item {GlassCard(Modifier.fillMaxWidth()){Column(Modifier.padding(18.dp)){Text(receiver?.shortName?:"BIN chưa có trong danh sách: "+qr.bin);Text((if(qr.service=="QRIBFTTC")"Số thẻ: " else "Số tài khoản: ")+qr.account);Text("Tên từ QR: "+qr.recipientName.ifBlank {"Không có"});Text("Tên này chưa được đối chiếu với ngân hàng.")}}}
-  item {OutlinedTextField(Money.input(amount)?.let {Money.format(it).removeSuffix(" ₫")}?:amount,{amount=it.filter(Char::isDigit).take(12)},label={Text("Số tiền VND")},supportingText={Text(Money.input(amount)?.let(Money::format)?:"Cần nhập số tiền")},keyboardOptions=KeyboardOptions(keyboardType=KeyboardType.Number))}
+  item {GlassCard(Modifier.fillMaxWidth()){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(GlassTokens.gap)){InitialAvatar(qr.recipientName);Text(qr.recipientName.ifBlank {"Người nhận"},style=MaterialTheme.typography.titleLarge);Text(receiver?.shortName?:"BIN chưa có trong danh sách: "+qr.bin);Text((if(qr.service=="QRIBFTTC")"Số thẻ: " else "Số tài khoản: ")+qr.account);Text("Tên từ QR: "+qr.recipientName.ifBlank {"Không có"});Text("Kiểm tra lại tên trong app ngân hàng.",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}}}
+  item {OutlinedTextField(Money.input(amount)?.let {Money.format(it).removeSuffix(" ₫")}?:amount,{amount=it.filter(Char::isDigit).take(12)},label={Text("Số tiền VND")},textStyle=MaterialTheme.typography.headlineLarge.copy(fontFeatureSettings="tnum"),supportingText={Text(Money.input(amount)?.let(Money::format)?:"Cần nhập số tiền")},keyboardOptions=KeyboardOptions(keyboardType=KeyboardType.Number))}
   item {OutlinedTextField(memo,{memo=it.take(200)},label={Text("Nội dung chuyển khoản")})}
   item {Choice("Danh mục",categories.map {it.name},category){category=it}}
   item {Choice("Ví trả tiền",wallets.map {it.name},wallet){wallet=it}}
@@ -32,7 +33,7 @@ import vn.chitieu.ui.theme.*
   item {if(installed.isEmpty())Text("Không tìm thấy app ngân hàng đã được xác minh và đang cài. Bạn có thể ghi khoản chờ rồi chuyển thủ công.") else Choice("App ngân hàng của tôi",installed.map {it.shortName},payer?.shortName.orEmpty()){name->payer=installed.first {it.shortName==name};wallet=name;vm.work {vm.repo.dao.saveWallet(vn.chitieu.data.Wallet(name))}}}
   if(qr.service=="QRIBFTTC")item {Text("QR tới thẻ: chỉ sao chép số thẻ và mở app; chưa xác minh deep link tới thẻ.")}
   if(error.isNotBlank())item {Text(error,color=MaterialTheme.colorScheme.error)}
-  item {Button(enabled=!busy,onClick={val value=Money.input(amount);if(value==null)error="Số tiền không hợp lệ" else {busy=true;scope.launch {try {val e=Entry(amount=value,category=category,wallet=wallet,note=note,source=Source.QR,status=Status.PENDING,bankBin=qr.bin,recipient=qr.account,memo=memo,receivingBank=qr.recipientName,payerPackage=payer?.packageName.orEmpty());vm.repo.save(e);payer?.let {vm.preferences.text("defaultBank",it.packageName.orEmpty());vm.preferences.bank(qr.bin,it.packageName.orEmpty());vm.message.value=BankLauncher.open(context,it,receiver,e,qr.service)}?:run {vm.message.value="Đã lưu chờ. Chuyển thủ công "+Money.format(value)+"; nội dung: "+memo};onOpened()}catch(_:Exception){error="Không lưu được giao dịch. Chưa mở app ngân hàng."}finally {busy=false}}}}){Text(if(busy)"Đang lưu…" else "Lưu chờ và mở ngân hàng")}}
+  item {Button(modifier=Modifier.fillMaxWidth().heightIn(min=56.dp),shape=androidx.compose.foundation.shape.CircleShape,enabled=!busy,onClick={val value=Money.input(amount);if(value==null)error="Số tiền không hợp lệ" else {busy=true;scope.launch {try {val e=Entry(amount=value,category=category,wallet=wallet,note=note,source=Source.QR,status=Status.PENDING,bankBin=qr.bin,recipient=qr.account,memo=memo,receivingBank=qr.recipientName,payerPackage=payer?.packageName.orEmpty());vm.repo.save(e);payer?.let {vm.preferences.text("defaultBank",it.packageName.orEmpty());vm.preferences.bank(qr.bin,it.packageName.orEmpty());vm.message.value=BankLauncher.open(context,it,receiver,e,qr.service)}?:run {vm.message.value="Đã lưu chờ. Chuyển thủ công "+Money.format(value)+"; nội dung: "+memo};onOpened()}catch(_:Exception){error="Không lưu được giao dịch. Chưa mở app ngân hàng."}finally {busy=false}}}}){Text(if(busy)"Đang lưu…" else payer?.let {"Mở "+it.shortName}?:"Lưu khoản chờ")}}
   item {Text("App không tự biết chuyển khoản thành công. Khi quay lại, bạn cần xác nhận; mở app ngân hàng không đồng nghĩa đã trả tiền.")}
   item {TextButton(onClick=onBack){Text("Huỷ")}}
  }

@@ -19,6 +19,7 @@ android {
 kotlin { jvmToolchain(17) }
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 dependencies {
+ implementation(libs.splash)
  implementation(platform(libs.compose.bom)); implementation(libs.backdrop); implementation(libs.mlkit.text)
  implementation(libs.material3); implementation(libs.icons); debugImplementation(libs.ui.tooling)
  implementation(libs.activity); implementation(libs.core); implementation(libs.navigation)
@@ -30,5 +31,5 @@ dependencies {
  implementation(libs.zxing); implementation(libs.biometric); implementation(libs.serialization); implementation(libs.coroutines)
  testImplementation(libs.junit); testImplementation(libs.coroutines.test); testImplementation(libs.mockk); testImplementation(libs.turbine)
  androidTestImplementation(platform(libs.compose.bom)); androidTestImplementation(libs.compose.ui.test); debugImplementation(libs.compose.test.manifest);
- androidTestImplementation(libs.room.testing); androidTestImplementation(libs.testext); androidTestImplementation(libs.coroutines.test)
+ androidTestImplementation(libs.espresso); androidTestImplementation(libs.room.testing); androidTestImplementation(libs.testext); androidTestImplementation(libs.coroutines.test)
 }

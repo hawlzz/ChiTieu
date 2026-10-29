@@ -211,3 +211,10 @@ Kiểm tra thêm: byte/character length với payload Unicode VietQR từ ngân 
 - [ ] Kiểm tra camera, sinh trắc học, Photo Picker/share, cỡ chữ lớn và listener khóa máy lâu.
 - [ ] Xác minh deep link mở app trên từng ngân hàng; không tự chuyển tiền.
 - [ ] Dọn ảnh mồ côi sau thay dữ liệu backup; bổ sung trình xem ảnh riêng nếu cần.
+
+## UI — cần xác minh trên máy thật
+- // TODO: verify icon adaptive, themed icon và splash trên launcher HyperOS 2/Xiaomi 15 Android 15; ảnh hiện tại từ máy ảo Android 17.
+- // TODO: verify camera thật, flash và cảm giác haptic sau quét/ghi; bộ ảnh máy ảo không chứng minh phần cứng.
+- // TODO: verify hiệu năng kính trong sử dụng dài ngày trên Xiaomi; số máy ảo không đại diện tốc độ máy thật.
+- // TODO: verify cỡ chữ lớn hơn 1.3 và TalkBack trên các dialog quản trị/nhập dữ liệu dài.
+- Các trường ngày giờ nâng cao vẫn dùng dạng nhập ISO như trước; không thay parser/nghiệp vụ vì thiết kế UI.
