@@ -1,10 +1,14 @@
 # ChiTieu
 
-Ứng dụng Android quản lý thu chi cá nhân bằng tiếng Việt, chạy offline, dành cho APK cài trực tiếp và thiết bị không có Google Play Services.
+Ứng dụng Android quản lý thu chi cá nhân bằng tiếng Việt, chạy offline, dành cho APK cài trực tiếp. OCR bundled đã chạy trên Xiaomi Android 16; khả năng chạy không GMS còn cần xác minh.
 
-**Trạng thái:** đã build APK debug, chạy unit test và Android Lint qua từng giai đoạn. Chưa có Xiaomi/thiết bị Android kết nối để kiểm thử camera, vân tay, HyperOS và deep link ngân hàng. Parser thông báo/SMS đang là **khung chờ mẫu thật**, chưa tự ghi giao dịch từ thông báo.
+**Phiên bản 2 đang kiểm thử:** giao diện kính, đọc ảnh biên lai, thêm nhanh và cài đặt gọn hơn. Build debug/release, 59 unit test, lint và 11 test thiết bị đã qua. Đã chạy OCR 30 ảnh trên Xiaomi thật, chưa có nhãn được người dùng xác minh để tính độ chính xác. Parser thông báo/SMS ngân hàng thật vẫn chờ mẫu. Kết quả chi tiết ở [OCR-REPORT.md](OCR-REPORT.md) và [TESTING-REPORT.md](TESTING-REPORT.md).
 
 ## Tính năng
+
+- Đọc ảnh biên lai bằng Photo Picker hoặc chia sẻ ảnh; sửa kết quả trước khi xác nhận, gợi ý gộp để tránh trùng. Giữ ảnh mặc định tắt.
+- Giao diện sáng/tối/theo hệ thống với Backdrop; giảm hiệu ứng theo tùy chọn hoặc tiết kiệm pin.
+- Trang chính ba hành động; SMS, log và sao lưu nằm trong Nâng cao.
 
 - Thêm, sửa, xoá thu/chi; nhiều ví; danh mục có biểu tượng, màu và quy tắc từ khoá.
 - Tổng quan tháng: tổng thu, tổng chi, chênh lệch; biểu đồ Canvas theo danh mục; tìm kiếm và lọc ngày, tháng, ví, danh mục, trạng thái.
@@ -20,7 +24,7 @@
 
 ## Bắt đầu
 
-Cần JDK 17 và Android SDK. `minSdk 26`, `targetSdk 35`, compile SDK 37. Tiền dùng số nguyên VND; ngày giờ theo `Asia/Ho_Chi_Minh`.
+Cần JDK 17 và Android SDK. `minSdk 33`, `targetSdk 35`, compile SDK 37. Tiền dùng số nguyên VND; ngày giờ theo `Asia/Ho_Chi_Minh`.
 
 ```powershell
 # Trên máy đã được chuẩn bị trong D:\ChiTieu
@@ -87,3 +91,11 @@ Phiên bản plugin/thư viện quản lý tại `gradle/libs.versions.toml`; Gr
 5. Chạy test + lint, kiểm thử trên Xiaomi, rồi mới bật tự thêm giao dịch.
 
 Ngân sách theo danh mục được để cho giai đoạn tiếp theo như yêu cầu gốc.
+
+## Phát triển và kiểm thử v2
+
+Debug dùng applicationId vn.chitieu.debug, tách khỏi bản chính. Room tự nâng schema 1 → 2. Không chạy thử bằng dữ liệu thật trong app chính.
+
+Script PowerShell: scripts/adb_test.ps1 -Serial '<kết nối từ adb devices>'. Kiểm thử Compose/Room: .\gradlew.bat connectedDebugAndroidTest. Cách chuẩn bị môi trường, giới hạn HyperOS và ký release ở SETUP.md. Quyết định engine, dependency Google và minSdk ở DECISIONS.md; thay đổi giao diện ở CHANGELOG.md.
+
+Ảnh nguồn, nhãn, OCR chi tiết và ảnh chụp màn hình chỉ lưu cục bộ, không đưa vào git hoặc APK. Không dùng OCR làm ground truth. Chấm các nhãn được duyệt bằng scripts/score_receipts.py.

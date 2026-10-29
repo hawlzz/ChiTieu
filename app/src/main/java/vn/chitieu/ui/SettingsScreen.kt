@@ -3,13 +3,14 @@ import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.PowerManager
 import android.provider.Settings
-import android.service.notification.NotificationListenerService
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,42 +18,53 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.*
 import vn.chitieu.notification.*
-import vn.chitieu.domain.Money
-@Composable fun SettingsScreen(vm:LedgerViewModel) {
- val context=LocalContext.current;val settings by vm.settings.collectAsStateWithLifecycle();val connected by ListenerState.connected.collectAsStateWithLifecycle();val seen by ListenerState.lastSeen.collectAsStateWithLifecycle();val logs by vm.logs.collectAsStateWithLifecycle()
- var consent by remember {mutableStateOf(false)};var synthetic by remember {mutableStateOf("")};var result by remember {mutableStateOf("")}
- val permission=rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()){granted->vm.work {vm.preferences.flag("sms",granted)}}
- fun details() {runCatching {context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+context.packageName)))}}
- fun open(intent:Intent) {try {context.startActivity(intent)}catch(_:Exception){details()}}
- LazyColumn(Modifier.fillMaxSize().padding(horizontal=20.dp),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(vertical=20.dp)) {
-  item {Text("Cài đặt & kiểm tra thiết lập",style=MaterialTheme.typography.headlineMedium)}
-  item {Text("Dữ liệu ở trên máy. Không có Internet, quảng cáo, analytics hay Google Play Services.")}
-  item {Toggle("Giao diện tối",settings.dark){vm.work {vm.preferences.flag("dark",it)}}}
-  item {SecuritySettings(vm,settings)}
-  item {BackupSettings(vm)}
-  item {ManageSettings(vm)}
-  item {Text("Đọc biến động số dư",style=MaterialTheme.typography.titleLarge);Text("Chỉ đọc app ngân hàng bạn bật dưới đây. Quyền truy cập thông báo cho phép hệ thống chuyển thông báo tới dịch vụ; ChiTieu bỏ qua các app khác.")}
-  item {Text(if(connected)"Listener đã kết nối" else "Listener chưa kết nối — kiểm tra quyền và hạn chế chạy nền");Button(onClick={open(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))}){Text("Cấp quyền truy cập thông báo")};OutlinedButton(onClick={runCatching {NotificationListenerService.requestRebind(ComponentName(context,BankNotificationListener::class.java))}}){Text("Kết nối lại listener")}}
-  item {Text("Chưa có mẫu thông báo/SMS thật: parser từng ngân hàng đang ở dạng khung, chưa tự ghi giao dịch. Bật log sau khi đồng ý để thu thập mẫu; chỉ gửi mẫu đã che dữ liệu khi muốn bổ sung parser.",color=MaterialTheme.colorScheme.error)}
-  items(vm.registry.banks.filter {it.packageName!=null},key={it.code}) {bank->Column {Toggle(bank.shortName,bank.packageName in settings.enabled){enabled->vm.work {vm.preferences.enable(bank.packageName!!,enabled)}};Text(seen[bank.packageName]?.let {"Đã nhận thông báo trong phiên này lúc "+java.time.Instant.ofEpochMilli(it).atZone(vn.chitieu.domain.VN_ZONE).toLocalTime().withNano(0)}?:"Chưa thấy thông báo trong phiên này. Hãy kiểm tra bằng thông báo thật từ ngân hàng.")}}
-  item {Text("Máy không có GMS có thể không nhận thông báo FCM. Listener không thể đọc thông báo chưa từng đến máy. Bản ROM, Play Integrity và chính sách từng ngân hàng cần tự kiểm tra.")}
-  item {Toggle("Tự thêm sau khi parser đã xác minh",settings.autoAdd){vm.work {vm.preferences.flag("autoAdd",it)}};Text("Tắt: giao dịch từ parser vào Chờ duyệt. Khớp một giao dịch QR duy nhất trong 10 phút: xác nhận giao dịch đó và chống trùng.")}
-  item {Toggle("Ghi log thông báo thô (tối đa 100)",settings.rawLog){enabled->if(enabled)consent=true else vm.work {vm.preferences.flag("rawLog",false)}};Text("Mặc định tắt. Chỉ ghi nội dung app ngân hàng được bật, vào bộ nhớ riêng cục bộ. Log có thể chứa dữ liệu tài chính.");TextButton(onClick={vm.work {vm.repo.dao.clearLogs()}}){Text("Xoá toàn bộ log thô")}}
-  items(logs,key={it.id}) {log->Card(Modifier.fillMaxWidth()){Column(Modifier.padding(12.dp)){Text(log.bank);Text(log.body)}}}
-  item {Toggle("Đọc SMS Banking dự phòng",settings.sms){enabled->if(!enabled)vm.work {vm.preferences.flag("sms",false)} else if(ContextCompat.checkSelfPermission(context,Manifest.permission.RECEIVE_SMS)==PackageManager.PERMISSION_GRANTED)vm.work {vm.preferences.flag("sms",true)} else permission.launch(Manifest.permission.RECEIVE_SMS)};Text("SMS là quyền nhạy cảm. Mặc định tắt; chỉ bật nếu bạn chủ động dùng SMS Banking. Danh sách đầu số/brandname hiện trống vì chưa có mẫu được xác minh; SMS khác bị bỏ qua, không lưu OTP.")}
-  item {Text("Thử parser bằng dữ liệu GIẢ",style=MaterialTheme.typography.titleMedium);OutlinedTextField(synthetic,{synthetic=it.take(4096)},label={Text("[SIMULATED] OUT 1.250.000 VND MEMO=TEST")});TextButton(onClick={val p=SyntheticParser.parse(synthetic,System.currentTimeMillis());result=p?.let {"DỮ LIỆU GIẢ: "+it.kind+" "+Money.format(it.amount)+" · "+it.memo}?:"Không khớp định dạng giả. Không có giao dịch nào được lưu."}){Text("Phân tích thử (không lưu)")};Text(result)}
-  item {Text("Hướng dẫn Xiaomi / HyperOS",style=MaterialTheme.typography.titleLarge)}
-  item {Text("1. Bật tự khởi động trong Thông tin ứng dụng → Quyền / Tự khởi động. Tên mục khác nhau theo ROM.");OutlinedButton(onClick={details()}){Text("Mở Thông tin ứng dụng")}}
-  item {Text("2. Pin → Không hạn chế. Tìm ChiTieu trong danh sách tối ưu pin.");OutlinedButton(onClick={open(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))}){Text("Mở tối ưu pin")}}
-  item {Text("3. Mở đa nhiệm, giữ thẻ ChiTieu và chọn khoá ứng dụng. ROM có thể có thao tác khác.")}
-  item {Text("4. Với APK sideload Android 13+: Thông tin ứng dụng → ⋮ → Cho phép cài đặt hạn chế nếu quyền truy cập thông báo bị chặn.");OutlinedButton(onClick={details()}){Text("Mở trang quyền / cài đặt hạn chế")}}
-  item {Text("5. Nếu HyperOS chặn mở app khi chạy nền, kiểm tra Quyền khác → Hiển thị cửa sổ bật lên khi chạy nền. ChiTieu chỉ chủ động mở ngân hàng từ thao tác trên màn hình; không yêu cầu quyền vẽ đè.");OutlinedButton(onClick={details()}){Text("Mở Quyền khác (tìm thủ công)")}}
-  item {Text("// TODO: verify — đường dẫn HyperOS/Autostart và vị trí các mục trên Xiaomi 15 thực tế. Các nút dùng trang hệ thống có fallback; không đoán component Xiaomi.")}
-  item {Button(onClick={vm.work {vm.preferences.flag("onboarded",true)}}){Text("Đã xem hướng dẫn thiết lập")}}
+import vn.chitieu.ui.theme.*
+@Composable fun SettingsScreen(vm:LedgerViewModel,advanced:Boolean=false,onAdvanced:()->Unit={}) {
+ val context=LocalContext.current;val settings by vm.settings.collectAsStateWithLifecycle();val connected by ListenerState.connected.collectAsStateWithLifecycle();val logs by vm.logs.collectAsStateWithLifecycle();var consent by remember {mutableStateOf(false)};var security by remember {mutableStateOf(false)};var about by remember {mutableStateOf(false)};var tick by remember {mutableIntStateOf(0)}
+ LifecycleEventEffect(Lifecycle.Event.ON_RESUME){tick++}
+ val granted=remember(tick){context.packageName in NotificationManagerCompat.getEnabledListenerPackages(context)}
+ val battery=remember(tick){context.getSystemService(PowerManager::class.java).isIgnoringBatteryOptimizations(context.packageName)}
+ val installed=remember {vm.registry.installed(context)}
+ val permission=rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()){grantedSms->vm.work {vm.preferences.flag("sms",grantedSms)}}
+ fun details(){runCatching {context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+context.packageName)))}}
+ fun open(intent:Intent){try {context.startActivity(intent)}catch(_:Exception){details()}}
+ LazyColumn(Modifier.fillMaxSize().padding(horizontal=20.dp),verticalArrangement=Arrangement.spacedBy(14.dp),contentPadding=PaddingValues(top=12.dp,bottom=30.dp)) {
+  item {GlassTopBar(if(advanced)"Nâng cao" else "Cài đặt")}
+  if(!advanced) {
+   item {GlassCard(Modifier.fillMaxWidth()){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){Text("Sẵn sàng chưa?",style=MaterialTheme.typography.titleLarge);Text("Có thể dùng thêm nhanh và đọc ảnh ngay. Các bước sau giúp đọc thông báo ổn định hơn.")
+    if(!granted)SetupStep("Quyền đọc thông báo",onFix={open(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))})
+    if(!granted&&"restricted" !in settings.setupConfirmed)SetupStep("Cho phép cài đặt hạn chế","Thông tin ứng dụng → ⋮; vị trí tùy bản HyperOS.",onFix={details()},onConfirm={vm.work {vm.preferences.confirmSetup("restricted")}})
+    if("autostart" !in settings.setupConfirmed)SetupStep("Tự khởi động","Chưa thể kiểm tra tự động trên bản HyperOS này.",onFix={details()},onConfirm={vm.work {vm.preferences.confirmSetup("autostart")}})
+    if(!battery)SetupStep("Pin: Không hạn chế",onFix={open(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))})
+    if("popup" !in settings.setupConfirmed)SetupStep("Mở cửa sổ khi chạy nền","Tự xác nhận sau khi kiểm tra trong Quyền khác.",onFix={details()},onConfirm={vm.work {vm.preferences.confirmSetup("popup")}})
+    if(granted&&battery&&setOf("autostart","popup").all {it in settings.setupConfirmed})Text("✓ Các bước đã hoàn tất (một số bước do bạn xác nhận).",color=MaterialTheme.colorScheme.primary)
+    if(granted&&!connected)TextButton(onClick={runCatching {android.service.notification.NotificationListenerService.requestRebind(ComponentName(context,BankNotificationListener::class.java))}}){Text("Kết nối lại đọc thông báo")}
+   }}}
+   item {Choice("Giao diện",listOf("Theo hệ thống","Sáng","Tối"),when(settings.themeMode){"dark"->"Tối";"light"->"Sáng";else->"Theo hệ thống"}){value->vm.work {vm.preferences.text("themeMode",when(value){"Tối"->"dark";"Sáng"->"light";else->"system"})}}}
+   item {Text("Ngân hàng của bạn",style=MaterialTheme.typography.titleLarge);if(installed.isEmpty())Text("Chưa thấy app ngân hàng đã được xác minh trên máy.")}
+   installed.forEach {bank->item {Toggle(bank.shortName,bank.packageName in settings.enabled){enabled->vm.work {vm.preferences.enable(bank.packageName!!,enabled)}}}}
+   item {Choice("Khi nhận giao dịch",listOf("Tự ghi nhận","Chờ duyệt"),if(settings.autoAdd)"Tự ghi nhận" else "Chờ duyệt"){vm.work {vm.preferences.flag("autoAdd",it=="Tự ghi nhận")}};Text("Chưa có mẫu thông báo ngân hàng đã xác minh. Trong lúc này, dùng đọc ảnh hoặc thêm nhanh.",style=MaterialTheme.typography.bodySmall)}
+   item {GlassButton("Khoá ứng dụng",{security=true},Modifier.fillMaxWidth())}
+   item {GlassButton("Nâng cao",onAdvanced,Modifier.fillMaxWidth())}
+   item {TextButton(onClick={about=true}){Text("Giới thiệu & giấy phép")}}
+  } else {
+   item {Toggle("Giảm hiệu ứng",settings.reduceEffects){vm.work {vm.preferences.flag("reduceEffects",it)}};Text("Tự giảm khi bật tiết kiệm pin.")}
+   item {Toggle("Lưu ảnh biên lai cùng giao dịch",settings.keepReceipt){vm.work {vm.preferences.flag("keepReceipt",it)}};Text("Mặc định tắt. Khi bật, ảnh nằm trong bộ nhớ riêng của app; không đưa vào bản sao lưu JSON.")}
+   item {Toggle("SMS Banking dự phòng",settings.sms){enabled->if(!enabled)vm.work {vm.preferences.flag("sms",false)}else if(ContextCompat.checkSelfPermission(context,Manifest.permission.RECEIVE_SMS)==PackageManager.PERMISSION_GRANTED)vm.work {vm.preferences.flag("sms",true)}else permission.launch(Manifest.permission.RECEIVE_SMS)};Text("Quyền nhạy cảm, mặc định tắt. Chưa có đầu số và mẫu thật nên chưa tự nhập SMS.")}
+   item {Toggle("Ghi nội dung thông báo cục bộ",settings.rawLog){enabled->if(enabled)consent=true else vm.work {vm.preferences.flag("rawLog",false)}};Text("Chỉ ngân hàng đã bật, tối đa 100 bản tin. Không gửi ra ngoài.");TextButton(onClick={vm.work {vm.repo.dao.clearLogs()}}){Text("Xoá nội dung đã ghi")}}
+   if(settings.rawLog)logs.forEach {log->item {Card(Modifier.fillMaxWidth()){Column(Modifier.padding(12.dp)){Text(log.bank);Text(log.body)}}}}
+   item {ManageSettings(vm)}
+   item {BackupSettings(vm)}
+   item {TextButton(onClick=onAdvanced){Text("Quay lại cài đặt")}}
+  }
  }
- if(consent)AlertDialog(onDismissRequest={consent=false},title={Text("Cho phép ghi log tài chính cục bộ?")},text={Text("Có thể lưu số tài khoản, số dư và nội dung giao dịch từ các ngân hàng bạn đã bật. Không gửi ra ngoài. Bạn có thể tắt và xoá log bất kỳ lúc nào.")},confirmButton={TextButton(onClick={vm.work {vm.preferences.flag("rawLog",true)};consent=false}){Text("Tôi đồng ý bật")}},dismissButton={TextButton(onClick={consent=false}){Text("Huỷ")}})
+ if(consent)AlertDialog(onDismissRequest={consent=false},title={Text("Cho phép lưu thông báo trên máy?")},text={Text("Thông báo có thể chứa số tài khoản, số dư và nội dung giao dịch. Bạn có thể tắt và xoá bất cứ lúc nào.")},confirmButton={TextButton(onClick={vm.work {vm.preferences.flag("rawLog",true)};consent=false}){Text("Cho phép")}},dismissButton={TextButton(onClick={consent=false}){Text("Huỷ")}})
+ if(security)GlassDialog({security=false}){Column(Modifier.heightIn(max=600.dp).verticalScrollCompat()){SecuritySettings(vm,settings);TextButton(onClick={security=false}){Text("Đóng")}}}
+ if(about)GlassDialog({about=false}){Text("ChiTieu 2",style=MaterialTheme.typography.titleLarge);Text("Kính lỏng: Backdrop 2.0.1 — Kyant0, Apache-2.0. Component giao diện do ChiTieu xây dựng.");Text("OCR: ML Kit Text Recognition bundled — Google, theo ML Kit Terms of Service. Mô hình được đóng gói; app không có quyền Internet.");Text("Dữ liệu chỉ xử lý trên máy. Không có mẫu ngân hàng đã xác minh thì không tự đoán giao dịch.");TextButton(onClick={about=false}){Text("Đóng")}}
 }
-@Composable fun Toggle(label:String,value:Boolean,onChange:(Boolean)->Unit) {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(label,Modifier.weight(1f).padding(end=12.dp));Switch(checked=value,onCheckedChange=onChange)}}
-
+@Composable private fun Modifier.verticalScrollCompat():Modifier=this.verticalScroll(rememberScrollState())
+@Composable private fun SetupStep(title:String,hint:String="",onFix:()->Unit,onConfirm:(()->Unit)?=null){Column {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("○ "+title,Modifier.weight(1f).padding(top=12.dp));TextButton(onClick=onFix){Text("Sửa")}};if(hint.isNotBlank())Text(hint,style=MaterialTheme.typography.bodySmall);onConfirm?.let {TextButton(onClick=it){Text("Tôi đã kiểm tra")}}}}
+@Composable fun Toggle(label:String,value:Boolean,onChange:(Boolean)->Unit){Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(label,Modifier.weight(1f).padding(end=12.dp));Switch(checked=value,onCheckedChange=onChange)}}

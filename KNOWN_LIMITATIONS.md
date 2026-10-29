@@ -16,3 +16,12 @@
 - Chưa có quản lý ngân sách theo danh mục; nằm ở giai đoạn sau. Không có đồng bộ cloud, OCR hoá đơn, FCM hay SMS history.
 - Cảnh báo deprecated: opt-out Kotlin tích hợp/new DSL để dùng plugin theo cấu hình yêu cầu; cần di trú trước AGP 10. targetSdk 35 được giữ theo yêu cầu nên lint cảnh báo OldTargetApi; một số dependency/công cụ mới hơn nằm ngoài tổ hợp Kotlin đã xác nhận nên không tự nâng.
 - Trong môi trường thực thi bị giới hạn, AAPT2 có thể crash native kể cả app tối thiểu. Người dùng đã chạy build ngoài môi trường này thành công. Log thử lỗi được giữ ở `D:\ChiTieu\evidence`, không đưa vào GitHub.
+
+## Giới hạn bổ sung v2
+
+- minSdk 33; máy Android 12 trở xuống không cài bản này.
+- OCR đã chạy trên 30 ảnh Techcombank nhưng nhãn chưa xác minh, nên chưa có số liệu accuracy. Các ngân hàng khác chưa có bộ ảnh.
+- ML Kit bundled vẫn có dependency Google helper; không có quyền INTERNET, nhưng máy không GMS chưa được kiểm chứng.
+- Thời gian, mã giao dịch và tên có thể thiếu/sai; luôn kiểm tra trước khi lưu. Confidence không phải xác suất.
+- Ảnh lưu tùy chọn chưa có trình xem riêng trong app; metadata có trên giao dịch. Ảnh không đi theo backup; CSV v1 không xuất metadata biên lai. Khôi phục có thể để lại ảnh cũ không còn tham chiếu trong bộ nhớ riêng.
+- Deep link và thông báo ngân hàng thật còn chờ kiểm chứng. Xem TESTING-REPORT.md để biết kết quả thiết bị và các bước bị chặn.

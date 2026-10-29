@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
  override fun onListenerDisconnected() {ListenerState.connected.value=false;runCatching {requestRebind(ComponentName(this,BankNotificationListener::class.java))}}
  override fun onNotificationPosted(sbn:StatusBarNotification?) {
   if(sbn==null||sbn.notification.flags and Notification.FLAG_GROUP_SUMMARY!=0)return
-  if(ingestor.registry.byPackage(sbn.packageName)==null)return
+  if(ingestor.registry.byPackage(sbn.packageName)==null&&!vn.chitieu.debug.TestNotifications.accepts(sbn.packageName))return
   val notification=sbn.notification
   val body=(notification.extras.getCharSequence(Notification.EXTRA_BIG_TEXT)?:notification.extras.getCharSequence(Notification.EXTRA_TEXT))?.toString().orEmpty()
   val title=notification.extras.getCharSequence(Notification.EXTRA_TITLE)?.toString().orEmpty()
@@ -21,4 +21,3 @@ import kotlinx.coroutines.*
  }
  override fun onDestroy(){ListenerState.connected.value=false;scope.cancel();super.onDestroy()}
 }
-

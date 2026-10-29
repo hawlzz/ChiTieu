@@ -4,3 +4,12 @@
 local.properties
 *.jks
 *.keystore
+
+/testdata/
+/screenshots/
+/local-reports/
+**/labels*.csv
+**/receipt-results*.json
+
+# Local Android Studio state
+.idea/

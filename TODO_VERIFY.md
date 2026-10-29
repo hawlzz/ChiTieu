@@ -202,3 +202,12 @@ Nguồn: https://api.vietqr.io/v2/banks ; https://api.vietqr.io/v2/android-app-d
 Package: https://play.google.com/store/apps/details?id=com.VCB ; https://play.google.com/store/apps/details?id=com.mbmobile ; https://play.google.com/store/apps/details?id=vn.com.techcombank.bb.app ; https://play.google.com/store/apps/details?id=com.vnpay.bidv ; https://play.google.com/store/apps/details?id=com.vietinbank.ipay
 
 Kiểm tra thêm: byte/character length với payload Unicode VietQR từ ngân hàng thật; tên chủ tài khoản từ QR chưa phải xác minh ngân hàng; đường dẫn HyperOS; sender/brandname SMS; hành vi FCM/Play Integrity; tham số url trong deep link hiện tại của nhà cung cấp.
+
+## V2 cần xác minh tiếp
+
+- [ ] Người dùng duyệt labels.csv; chấm riêng tập phát triển và tập kiểm tra, không chỉnh parser theo tập kiểm tra.
+- [ ] Chạy cùng pipeline trên thiết bị thực sự không GMS; so sánh Tesseract nếu ML Kit không đạt.
+- [ ] Bổ sung ảnh ngân hàng khác và fixture thông báo/SMS thật được phép dùng.
+- [ ] Kiểm tra camera, sinh trắc học, Photo Picker/share, cỡ chữ lớn và listener khóa máy lâu.
+- [ ] Xác minh deep link mở app trên từng ngân hàng; không tự chuyển tiền.
+- [ ] Dọn ảnh mồ côi sau thay dữ liệu backup; bổ sung trình xem ảnh riêng nếu cần.

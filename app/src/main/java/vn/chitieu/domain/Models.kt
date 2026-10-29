@@ -5,7 +5,7 @@ import java.util.Locale
 import kotlinx.serialization.Serializable
 @Serializable enum class Kind { INCOME, EXPENSE }
 @Serializable enum class Status { CONFIRMED, PENDING, REVIEW, APPROVAL }
-@Serializable enum class Source { MANUAL, QR, NOTIFICATION, SMS }
+@Serializable enum class Source { MANUAL, QR, NOTIFICATION, SMS, RECEIPT }
 object Money {
  const val MAX=999_999_999_999L
  fun validate(amount:Long):Long { require(amount in 1..MAX) { "Số tiền phải từ 1 đến 999.999.999.999 ₫" };return amount }

@@ -1,3 +1,5 @@
+> Giai đoạn 1: tài liệu dưới đây là kế hoạch kiểm thử ban đầu. Kết quả v2 thực đo nằm trong [TESTING-REPORT.md](TESTING-REPORT.md).
+
 # Kiểm thử ChiTieu trên Xiaomi 15
 
 ## Tự động

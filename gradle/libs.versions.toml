@@ -23,7 +23,14 @@ lifecycle = "2.11.0"
 serialization = "1.12.0"
 junit = "4.13.2"
 
+backdrop = "2.0.1"
+mlkit = "16.0.1"
+
 [libraries]
+backdrop = { module = "io.github.kyant0:backdrop", version.ref = "backdrop" }
+mlkit-text = { module = "com.google.mlkit:text-recognition", version.ref = "mlkit" }
+compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
 material3 = { module = "androidx.compose.material3:material3" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }

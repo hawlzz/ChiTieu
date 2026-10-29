@@ -10,6 +10,8 @@ data class Entry(@PrimaryKey val id:String=java.util.UUID.randomUUID().toString(
 @Serializable @Entity(tableName="rules") data class CategoryRule(@PrimaryKey val keyword:String,val category:String)
 @Serializable @Entity(tableName="receipts") data class Receipt(@PrimaryKey val fingerprint:String,val entryId:String,val receivedAt:Long)
 @Entity(tableName="raw_logs") data class RawLog(@PrimaryKey(autoGenerate=true) val id:Long=0,val bank:String,val body:String,val time:Long)
+@Serializable @Entity(tableName="receipt_evidence",foreignKeys=[ForeignKey(entity=Entry::class,parentColumns=["id"],childColumns=["entryId"],onDelete=ForeignKey.CASCADE)])
+data class ReceiptEvidence(@PrimaryKey val entryId:String,val digest:String,val transactionId:String,val recipientName:String,val receiptTime:Long,val imageName:String="")
 class Converters {
  @TypeConverter fun kind(v:String):Kind=Kind.valueOf(v)
  @TypeConverter fun kind(v:Kind):String=v.name
@@ -19,6 +21,10 @@ class Converters {
  @TypeConverter fun source(v:Source):String=v.name
 }
 @Dao interface LedgerDao {
+ @Query("SELECT * FROM receipt_evidence") fun observeEvidence():Flow<List<ReceiptEvidence>>
+ @Query("SELECT * FROM receipt_evidence") suspend fun allEvidence():List<ReceiptEvidence>
+ @Query("SELECT * FROM receipt_evidence WHERE entryId=:id") suspend fun evidenceFor(id:String):ReceiptEvidence?
+ @Upsert suspend fun evidence(value:ReceiptEvidence)
  @Query("SELECT * FROM entries ORDER BY createdAt DESC") fun observe():Flow<List<Entry>>
  @Query("SELECT * FROM entries ORDER BY createdAt DESC") suspend fun all():List<Entry>
  @Query("SELECT * FROM entries WHERE id=:id") suspend fun get(id:String):Entry?
@@ -50,6 +56,6 @@ class Converters {
  @Query("DELETE FROM categories") suspend fun clearCategories()
  @Query("DELETE FROM wallets") suspend fun clearWallets()
 }
-@Database(entities=[Entry::class,Category::class,Wallet::class,CategoryRule::class,Receipt::class,RawLog::class],version=1,exportSchema=true)
+@Database(entities=[Entry::class,Category::class,Wallet::class,CategoryRule::class,Receipt::class,RawLog::class,ReceiptEvidence::class],version=2,exportSchema=true)
 @TypeConverters(Converters::class)
 abstract class LedgerDb:RoomDatabase() {abstract fun dao():LedgerDao}

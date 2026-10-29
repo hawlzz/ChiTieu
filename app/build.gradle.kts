@@ -9,17 +9,17 @@ plugins {
 android {
  namespace = "vn.chitieu"
  compileSdk = 37
- defaultConfig { applicationId = "vn.chitieu"; minSdk = 26; targetSdk = 35; versionCode = 1; versionName = "1.0.0"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+ defaultConfig { applicationId = "vn.chitieu"; minSdk = 33; targetSdk = 35; versionCode = 2; versionName = "2.0.0"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
  buildFeatures { compose = true; buildConfig = true }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
- buildTypes { release { isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") } }
+ buildTypes { debug { applicationIdSuffix = ".debug"; versionNameSuffix = "-debug" }; release { isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") } }
  testOptions { unitTests.isReturnDefaultValues = true }
  lint { abortOnError = true; checkReleaseBuilds = true }
 }
 kotlin { jvmToolchain(17) }
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 dependencies {
- implementation(platform(libs.compose.bom))
+ implementation(platform(libs.compose.bom)); implementation(libs.backdrop); implementation(libs.mlkit.text)
  implementation(libs.material3); implementation(libs.icons); debugImplementation(libs.ui.tooling)
  implementation(libs.activity); implementation(libs.core); implementation(libs.navigation)
  implementation(libs.lifecycle.runtime); implementation(libs.lifecycle.viewmodel); implementation(libs.lifecycle.process)
@@ -29,6 +29,6 @@ dependencies {
  implementation(libs.camera.core); implementation(libs.camera.camera2); implementation(libs.camera.lifecycle); implementation(libs.camera.view)
  implementation(libs.zxing); implementation(libs.biometric); implementation(libs.serialization); implementation(libs.coroutines)
  testImplementation(libs.junit); testImplementation(libs.coroutines.test); testImplementation(libs.mockk); testImplementation(libs.turbine)
+ androidTestImplementation(platform(libs.compose.bom)); androidTestImplementation(libs.compose.ui.test); debugImplementation(libs.compose.test.manifest);
  androidTestImplementation(libs.room.testing); androidTestImplementation(libs.testext); androidTestImplementation(libs.coroutines.test)
 }
-

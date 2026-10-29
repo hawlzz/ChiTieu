@@ -1,3 +1,5 @@
+> Lịch sử xác minh v1. Với bản cải tiến v2, xem [TESTING-REPORT.md](TESTING-REPORT.md) và [OCR-REPORT.md](OCR-REPORT.md).
+
 # Kết quả kiểm chứng
 
 ## Lệnh đã chạy
