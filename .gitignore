@@ -21,3 +21,8 @@ local.properties
 *.p12
 *signing*.properties
 *.idsig
+
+# Local run reports
+/*-REPORT.md
+/VALIDATION.md
+/archive/

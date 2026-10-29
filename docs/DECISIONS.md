@@ -40,4 +40,4 @@ APK release v2 unsigned: 48.769.012 bytes, so với v1 3.537.607 bytes (tăng 45
 - Giữ cờ onboarded sẵn có trong DataStore; không đổi schema Room hoặc hợp đồng Repository. Người dùng cũ chưa có cờ sẽ thấy chào mừng một lần; xem lại không xoá dữ liệu.
 - Splash dùng AndroidX core-splashscreen 1.2.0 từ Google Maven; Apache-2.0. Theo https://developer.android.com/develop/ui/views/launch/splash-screen/migrate .
 - Android 17 bỏ InputManager.getInstance; bổ sung trực tiếp Espresso 3.7.0 (chỉ androidTest) để tránh dependency 3.6.1 bắc cầu từ Compose test. Nguồn https://developer.android.com/jetpack/androidx/releases/test ; không thay thư viện nghiệp vụ để sửa hạ tầng test.
-- Không thêm GMS/Firebase/network permission. OCR ML Kit bundled từ bản v2 vẫn giữ nguyên; UI không chứng minh toàn bộ OCR chạy không GMS. Giới hạn này được giữ rõ trong OCR-REPORT.md.
+- Không thêm GMS/Firebase/network permission. OCR ML Kit bundled từ bản v2 vẫn giữ nguyên; UI không chứng minh toàn bộ OCR chạy không GMS. Giới hạn này được giữ rõ trong báo cáo OCR lưu trữ cục bộ.

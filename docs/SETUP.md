@@ -96,7 +96,7 @@ Nguồn chính thức: https://developer.android.com/studio ; bảng tương th�
 
 Đã xác minh import trong IDE: project nhận tên ChiTieu, module app và run configuration app; Gradle sync kết thúc thành công (IDE log onSuccess RESOLVE_PROJECT:2, màn hình Build ghi BUILD SUCCESSFUL). Còn cảnh báo AGP/DSL cũ như trước; không chạy Upgrade Assistant tự động.
 
-Máy ảo (29/10/2026): Android Emulator và system image Google Play x86_64 API 37.0 đã được cài thêm vào SDK trên D. Medium Phone API 37.0 khởi động được trong IDE sau khi người dùng bật tính năng Windows và khởi động lại. Shift+F9 cài app và kết nối debugger thành công; giới hạn tương tác của phiên Debug được ghi trong TESTING-REPORT.md.
+Máy ảo (29/10/2026): Android Emulator và system image Google Play x86_64 API 37.0 đã được cài thêm vào SDK trên D. Medium Phone API 37.0 khởi động được trong IDE sau khi người dùng bật tính năng Windows và khởi động lại. Shift+F9 cài app và kết nối debugger thành công; giới hạn tương tác của phiên Debug được ghi trong báo cáo kiểm thử lưu trữ cục bộ.
 
 ## Giao diện mới — công cụ/tài nguyên
 Không cài công cụ toàn máy. Dùng Python/Pillow 12.3.0 đã có để render vector icon ra PNG; cairosvg không có nên không sử dụng/cài. Tải Inter variable và giấy phép OFL từ google/fonts; bổ sung core-splashscreen 1.2.0 vào catalog. Espresso 3.7.0 chỉ thuộc APK kiểm thử, để tương thích Android 17. Gradle vẫn wrapper/JDK 17 hiện có.
