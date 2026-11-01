@@ -26,3 +26,8 @@ local.properties
 /*-REPORT.md
 /VALIDATION.md
 /archive/
+
+# Local design drafts and generated code graph
+/design/drafts/
+/design/previews/
+/graphify-out/

@@ -3,7 +3,7 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 import vn.chitieu.domain.*
-@Serializable @Entity(tableName="entries",indices=[Index("createdAt"),Index("status"),Index("recipient")])
+@Serializable @Entity(tableName="entries",indices=[Index("createdAt"),Index("status"),Index("recipient"),Index(value=["status","createdAt","kind","wallet","category"])])
 data class Entry(@PrimaryKey val id:String=java.util.UUID.randomUUID().toString(),val amount:Long,val kind:Kind=Kind.EXPENSE,val category:String="Khác",val wallet:String="Tiền mặt",val createdAt:Long=System.currentTimeMillis(),val note:String="",val source:Source=Source.MANUAL,val status:Status=Status.CONFIRMED,val bankBin:String="",val recipient:String="",val memo:String="",val receivingBank:String="",val payerPackage:String="")
 @Serializable @Entity(tableName="categories") data class Category(@PrimaryKey val name:String,val icon:String="●",val color:Long=0xFF267D66)
 @Serializable @Entity(tableName="wallets") data class Wallet(@PrimaryKey val name:String)
@@ -21,6 +21,8 @@ class Converters {
  @TypeConverter fun source(v:Source):String=v.name
 }
 @Dao interface LedgerDao {
+ @Query("SELECT status FROM entries WHERE id=:id") fun observeEntryStatus(id:String):Flow<Status?>
+ @Query("SELECT * FROM entries WHERE status='PENDING' ORDER BY createdAt DESC LIMIT 1") suspend fun pendingOnce():Entry?
  @Query("SELECT * FROM receipt_evidence") fun observeEvidence():Flow<List<ReceiptEvidence>>
  @Query("SELECT * FROM receipt_evidence") suspend fun allEvidence():List<ReceiptEvidence>
  @Query("SELECT * FROM receipt_evidence WHERE entryId=:id") suspend fun evidenceFor(id:String):ReceiptEvidence?
@@ -56,6 +58,6 @@ class Converters {
  @Query("DELETE FROM categories") suspend fun clearCategories()
  @Query("DELETE FROM wallets") suspend fun clearWallets()
 }
-@Database(entities=[Entry::class,Category::class,Wallet::class,CategoryRule::class,Receipt::class,RawLog::class,ReceiptEvidence::class],version=2,exportSchema=true)
+@Database(entities=[Entry::class,Category::class,Wallet::class,CategoryRule::class,Receipt::class,RawLog::class,ReceiptEvidence::class],version=3,exportSchema=true)
 @TypeConverters(Converters::class)
-abstract class LedgerDb:RoomDatabase() {abstract fun dao():LedgerDao}
+abstract class LedgerDb:RoomDatabase() {abstract fun dao():LedgerDao;abstract fun statistics():vn.chitieu.statistics.StatisticsDao}

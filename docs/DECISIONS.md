@@ -41,3 +41,51 @@ APK release v2 unsigned: 48.769.012 bytes, so với v1 3.537.607 bytes (tăng 45
 - Splash dùng AndroidX core-splashscreen 1.2.0 từ Google Maven; Apache-2.0. Theo https://developer.android.com/develop/ui/views/launch/splash-screen/migrate .
 - Android 17 bỏ InputManager.getInstance; bổ sung trực tiếp Espresso 3.7.0 (chỉ androidTest) để tránh dependency 3.6.1 bắc cầu từ Compose test. Nguồn https://developer.android.com/jetpack/androidx/releases/test ; không thay thư viện nghiệp vụ để sửa hạ tầng test.
 - Không thêm GMS/Firebase/network permission. OCR ML Kit bundled từ bản v2 vẫn giữ nguyên; UI không chứng minh toàn bộ OCR chạy không GMS. Giới hạn này được giữ rõ trong báo cáo OCR lưu trữ cục bộ.
+
+## PIN / Cài đặt / Thống kê 2.1
+- Giữ nguyên tên DataStore, pinSalt/pinHash, Base64, PBKDF2-HMAC-SHA256 210.000 vòng / 256 bit. Thêm overload CharArray; giao diện mới dùng bộ đệm có thể xoá.
+- Có nút Mở khoá; không lưu hoặc tiết lộ độ dài PIN cũ để tự gửi. PIN vẫn từ 6–12 số.
+- Bộ đếm sai được ghi đồng bộ trong bộ nhớ riêng trước khi trả kết quả. Dùng elapsedRealtime + BOOT_COUNT; khởi động lại thiết bị thì bắt đầu lại mức chờ đang có, không dùng giờ tường để tránh lách bằng đổi ngày giờ.
+- Sau 5 lần sai: 30 giây; lần 6: 1 phút; từ lần 7: 5 phút; chỉ PIN đúng đặt lại bộ đếm.
+- Tự khoá mặc định 1 phút; vẫn khoá khi tạo tiến trình mới. Quay lại từ ngân hàng trong khoảng được chọn không làm mất trạng thái điều hướng; khoản PENDING vẫn ở Room và được hỏi lại sau mở khoá.
+- Ẩn đa nhiệm và chặn chụp màn hình là hai tuỳ chọn độc lập; FLAG_SECURE mặc định tắt và bị bỏ qua trong debug.
+- Giữ ngày bắt đầu tháng là ngày 1. Chưa thêm kỳ lương riêng vì sẽ thay đổi ngữ nghĩa bộ chọn tháng, báo cáo lịch sử và xuất dữ liệu; tránh đưa thêm cấu hình không đồng nhất.
+- Biểu đồ tự vẽ bằng Canvas, không thêm thư viện/GMS. Tuần bắt đầu thứ Hai, múi giờ Asia/Ho_Chi_Minh. Kỳ trước của tháng/năm là tháng/năm lịch trước; Tuỳ chọn dùng cùng số ngày liền trước.
+- Thống kê dùng SUM/COUNT/GROUP BY trong Room Flow. Migration 2→3 chỉ thêm chỉ mục, không tạo lại bảng. Danh sách chi tiết danh mục tải từng đợt 50 mục.
+- App chưa có kiểu giao dịch chuyển ví nội bộ; không tự suy diễn từ tên ví/người nhận để loại khoản thu/chi.
+- Chế độ Cả hai hiển thị tổng thu + chi và chênh lệch riêng, không gọi tổng luân chuyển là số dư. Dự báo chỉ hiện cho tháng hiện tại, ghi rõ ước tính.
+- Các xác nhận HyperOS được ghi rõ là do người dùng xác nhận; không nhận là quyền đã được tự kiểm tra.
+
+## Rà soát trước khi phát hành 2.1 (30/10/2026)
+- Giữ các tính năng đang phát triển và schema Room 3. Không reset toàn bộ về 2.0 vì thiết bị đã nâng dữ liệu lên schema 3 không có migration hạ cấp.
+- Khi xác nhận chuyển khoản, theo dõi trạng thái theo ID hiện tại. Một PENDING mới không được đóng sheet của khoản trước.
+- Khoảng ngày dài được gộp thành tối đa 120 cột, có ghi số ngày mỗi cột; các tổng tiền vẫn dùng Long. Trục biểu đồ chứa được đường trung bình khi hiển thị cả thu và chi.
+- Xoá dữ liệu và nạp lại ví/danh mục mặc định nằm trong một transaction. Chỉ dọn ảnh sau khi transaction thành công.
+- README và danh mục APK quay về bản Git 2.0 đã phát hành. APK 2.1 trước rà soát đã được giữ ngoài repo; chỉ tạo lại ứng viên phát hành sau khi duyệt mã nguồn và bản kiểm tra mới.
+
+## Tinh chỉnh UI trước lượt duyệt — 01/11/2026
+- Dùng UI UX Pro Max cho touch target Android 48dp, selected semantics và tương phản; giữ Inter offline và hệ thống iOS-like đã có.
+- Không áp dụng pattern Contact Sales/video landing page hoặc font web từ kết quả tìm kiếm tự động vì không phù hợp app tài chính Android.
+- Không đổi dependency, schema, thuật toán tiền/PIN; không ký lại hoặc cập nhật release trong lượt UI này. Chủ dự án sẽ thử APK debug trước khi cho phép push.
+
+
+## Android nhiều hãng và sinh trắc học trước PIN — 01/11/2026
+- Phạm vi hỗ trợ vẫn là Android 13/API 33 trở lên. Không tuyên bố đã kiểm thử mọi hãng/phiên bản từ một AVD.
+- Dùng AndroidX BiometricPrompt do Activity tạo trong onCreate; session trong ViewModel chỉ giữ trạng thái đang xác thực khi xoay màn hình, không ghi nhận quyền mở khoá qua process death. UI gắn lại callback và huỷ khi rời màn khoá.
+- Khi người dùng đã bật sinh trắc học, thử BIOMETRIC_STRONG trước, hỗ trợ vân tay/khuôn mặt đủ chuẩn do Android quyết định. Không tự bật tuỳ chọn và không hạ xuống BIOMETRIC_WEAK để nhận mọi camera khuôn mặt.
+- Huỷ, chọn Dùng PIN, không đăng ký, lỗi phần cứng hoặc tạm khoá sinh trắc học đều trở về PIN. Không tự bật lại prompt khi resume sau khi đã chọn PIN. Thời gian chờ do nhập sai PIN vẫn áp dụng cho cả hai cách.
+- Giữ nguyên hash/salt/PIN hiện có và Room. Không xin quyền mới, không thêm dependency/GMS, không đổi mức bảo vệ của thuật toán PIN.
+- Checklist bắt buộc phản ánh quyền và kết nối NotificationListener thực tế. Tối ưu pin/hướng dẫn theo hãng là tuỳ chọn khắc phục khi nhận thông báo bị ngắt; không dùng xác nhận thủ công để giả định kết nối hoạt động.
+- Xiaomi/Redmi/POCO mới hiện hướng dẫn tự khởi động/giữ thẻ đa nhiệm; Samsung có hướng dẫn ứng dụng ngủ; hãng khác dùng hướng dẫn Android tổng quát. Không dựa vào intent nội bộ OEM. Thông tin ứng dụng là điểm vào ổn định; người dùng có thể bỏ qua mục không tồn tại.
+- API tham khảo: https://developer.android.com/identity/sign-in/biometric-auth ; https://developer.android.com/reference/androidx/biometric/BiometricPrompt ; https://developer.android.com/topic/performance/background-optimization .
+
+- Sửa lỗi yêu cầu điều hướng chạy trước NavHost ở lần cài mới: chờ hết onboarding rồi mới xử lý đường dẫn, ảnh chia sẻ và nút thiết lập; thêm hai test tái hiện khi Activity tạo mới.
+
+
+## G2 triển khai native — 02/11/2026
+- Thực hiện refinement từ preview G2 chủ dự án duyệt, giữ thiết kế/bố cục hiện có theo UI UX Pro Max. Primary vẫn là mực đủ đậm cho link/icon; CTA pastel dùng primaryContainer, tránh chữ nhạt trên nền nhạt.
+- Dùng Lucide đã có trong runtime phát triển, trích 56 glyph cần thiết thành ImageVector. Không thêm dependency. ISC notice: design/LUCIDE-LICENSE.txt và res/raw/lucide_license.txt, có thể đọc tại Giới thiệu/giấy phép. Các notice Material/Backdrop cũ giữ nguyên.
+- Launcher tĩnh và vector-only: gradient/lớp màu mô phỏng kính, không bê filter SVG Gaussian blur vào VectorDrawable. Độ sâu có thể khác PNG prototype; cần so trên launcher/ảnh native. Icon themed luôn đơn sắc theo Android.
+- Bóng mềm xuyên suốt bề mặt; blur/lens chỉ tại các vùng kính hiện có để giữ mục tiêu máy tầm trung trở lên. Low-RAM/tiết kiệm pin và giảm hiệu ứng dùng lớp đơn giản. Chưa tuyên bố FPS hay tốc độ phần cứng khi chưa đo.
+- Animation chỉ là UI: press trong graphicsLayer, tab Canvas, route transition. ContentObserver đọc trực tiếp animator_duration_scale để phản ứng khi đổi cài đặt Android; đăng ký/huỷ theo composition.
+- Native vector nguồn Lucide: https://lucide.dev/license ; https://github.com/lucide-icons/lucide . API: https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/vector/PathParser .

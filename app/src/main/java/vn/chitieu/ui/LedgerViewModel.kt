@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import vn.chitieu.data.*
 import javax.inject.Inject
-@HiltViewModel class LedgerViewModel @Inject constructor(val repo:Repository,val preferences:Preferences,val registry:vn.chitieu.qr.BankRegistry,val receipts:vn.chitieu.receipt.ReceiptRepository):ViewModel() {
+@HiltViewModel class LedgerViewModel @Inject constructor(val pinGate:PinGate,val repo:Repository,val preferences:Preferences,val registry:vn.chitieu.qr.BankRegistry,val receipts:vn.chitieu.receipt.ReceiptRepository):ViewModel() {
  val entries=repo.entries.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val categories=repo.dao.categories().stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val wallets=repo.dao.wallets().stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())

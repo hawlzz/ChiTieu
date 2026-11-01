@@ -1,3 +1,9 @@
+# Phương án đang dùng: G2 pastel glass
+
+Theo bản duyệt: ví kính xanh khói/pastel với dấu ghi nhận nổi rõ. Asset native là ic_launcher_background/foreground/monochrome; icon-preview.svg và PNG 512px được xuất từ chính đường vector native. Launcher Android chọn mặt nạ riêng.
+
+## Các phương án giai đoạn trước
+
 # Phương án icon ChiTieu
 
 1. **Mặc định — Quét và ghi nhận:** gradient xanh dương → teal, khung QR, đồng xu cách điệu và dấu tích. Đã triển khai adaptive/round/monochrome; hình giữa không dùng chữ/font.

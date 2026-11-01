@@ -218,3 +218,9 @@ Kiểm tra thêm: byte/character length với payload Unicode VietQR từ ngân 
 - // TODO: verify hiệu năng kính trong sử dụng dài ngày trên Xiaomi; số máy ảo không đại diện tốc độ máy thật.
 - // TODO: verify cỡ chữ lớn hơn 1.3 và TalkBack trên các dialog quản trị/nhập dữ liệu dài.
 - Các trường ngày giờ nâng cao vẫn dùng dạng nhập ISO như trước; không thay parser/nghiệp vụ vì thiết kế UI.
+
+## Bản 2.1 — xác minh trên thiết bị thật
+- // TODO: verify: vân tay tự mở, huỷ prompt và quay về PIN trên Xiaomi 15 không GMS.
+- // TODO: verify: ảnh đa nhiệm và FLAG_SECURE trên HyperOS; debug cố ý bỏ FLAG_SECURE.
+- // TODO: verify: vị trí các mục Tự khởi động, Cài đặt hạn chế, Cửa sổ nền, Khoá đa nhiệm trên bản HyperOS đang dùng.
+- // TODO: verify: TalkBack thực tế và hiệu năng GPU trên Xiaomi; số đo máy ảo không thay thế máy thật.

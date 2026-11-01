@@ -9,7 +9,7 @@ plugins {
 android {
  namespace = "vn.chitieu"
  compileSdk = 37
- defaultConfig { applicationId = "vn.chitieu"; minSdk = 33; targetSdk = 35; versionCode = 2; versionName = "2.0.0"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+ defaultConfig { applicationId = "vn.chitieu"; minSdk = 33; targetSdk = 35; versionCode = 3; versionName = "2.1.0"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
  buildFeatures { compose = true; buildConfig = true }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  buildTypes { debug { applicationIdSuffix = ".debug"; versionNameSuffix = "-debug" }; release { isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") } }
@@ -19,6 +19,7 @@ android {
 kotlin { jvmToolchain(17) }
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 dependencies {
+ implementation("androidx.compose.ui:ui-tooling-preview")
  implementation(libs.splash)
  implementation(platform(libs.compose.bom)); implementation(libs.backdrop); implementation(libs.mlkit.text)
  implementation(libs.material3); implementation(libs.icons); debugImplementation(libs.ui.tooling)

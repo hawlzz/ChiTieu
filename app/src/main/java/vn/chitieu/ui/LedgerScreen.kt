@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -15,6 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -28,27 +28,32 @@ import java.time.format.DateTimeFormatter
 private fun statusLabel(s:Status)=when(s){Status.CONFIRMED->"Đã ghi nhận";Status.PENDING->"Chờ xác nhận";Status.REVIEW->"Cần xem lại";Status.APPROVAL->"Chờ duyệt"}
 private fun sourceLabel(s:Source)=when(s){Source.MANUAL->"Thủ công";Source.QR->"QR";Source.NOTIFICATION->"Thông báo";Source.SMS->"SMS";Source.RECEIPT->"Biên lai"}
 @OptIn(ExperimentalMaterial3Api::class,ExperimentalFoundationApi::class)
-@Composable fun LedgerScreen(vm:LedgerViewModel,details:Boolean=false,onScan:()->Unit={},onReceipt:()->Unit={},onHistory:()->Unit={}) {
+@Composable fun LedgerScreen(vm:LedgerViewModel,details:Boolean=false,onScan:()->Unit={},onReceipt:()->Unit={},onHistory:()->Unit={},onStatistics:(YearMonth)->Unit={}) {
  val entries by vm.entries.collectAsStateWithLifecycle();val categories by vm.categories.collectAsStateWithLifecycle();val wallets by vm.wallets.collectAsStateWithLifecycle();val evidence by vm.evidence.collectAsStateWithLifecycle()
  var viewing by remember {mutableStateOf<Entry?>(null)}
- var editing by remember {mutableStateOf<Entry?>(null)};var adding by remember {mutableStateOf(false)};var deleting by remember {mutableStateOf<Entry?>(null)}
+ var editing by remember {mutableStateOf<Entry?>(null)};var adding by remember {mutableStateOf(AddEntryInbox.requested)};LaunchedEffect(Unit){AddEntryInbox.requested=false};var deleting by remember {mutableStateOf<Entry?>(null)}
  var showFilters by remember {mutableStateOf(false)};var monthPicker by remember {mutableStateOf(false)};var info by remember {mutableStateOf(false)}
  var month by remember {mutableStateOf(YearMonth.now(VN_ZONE))};var search by remember {mutableStateOf("")};var category by remember {mutableStateOf("Tất cả")};var wallet by remember {mutableStateOf("Tất cả")};var day by remember {mutableStateOf("")};var filter by remember {mutableStateOf("Tất cả")};var kindFilter by remember {mutableStateOf("Tất cả")}
  val listState=rememberLazyListState();val compact by remember {derivedStateOf {listState.firstVisibleItemIndex>0}}
  val haptic=LocalHapticFeedback.current
+ val stackAmounts=with(LocalDensity.current){LocalWindowInfo.current.containerSize.width.toDp()<GlassTokens.compactListWidth}||LocalDensity.current.fontScale>1.15f
  val filtered=entries.filter {e->monthOf(e.createdAt)==month&&(category=="Tất cả"||e.category==category)&&(wallet=="Tất cả"||e.wallet==wallet)&&(day.isBlank()||Instant.ofEpochMilli(e.createdAt).atZone(VN_ZONE).toLocalDate().toString()==day)&&listOf(e.note,e.memo,e.category,e.wallet,e.recipient,e.receivingBank).any {it.contains(search,true)}&&(filter=="Tất cả"||if(filter=="Đã ghi nhận")e.status==Status.CONFIRMED else e.status!=Status.CONFIRMED)&&(kindFilter=="Tất cả"||e.kind==if(kindFilter=="Thu")Kind.INCOME else Kind.EXPENSE)}
  val confirmed=filtered.filter {it.status==Status.CONFIRMED};val income=confirmed.filter {it.kind==Kind.INCOME}.sumOf {it.amount};val expense=confirmed.filter {it.kind==Kind.EXPENSE}.sumOf {it.amount}
  Column(Modifier.fillMaxSize().padding(horizontal=GlassTokens.margin)) {
-  LargeTitleHeader(if(details)"Giao dịch" else "Tổng quan",compact){FilledIconButton(onClick={adding=true;haptic.performHapticFeedback(HapticFeedbackType.LongPress)},shape=CircleShape){Icon(Icons.Rounded.Add,"Thêm nhanh")}}
-  LazyColumn(Modifier.fillMaxSize(),state=listState,verticalArrangement=Arrangement.spacedBy(GlassTokens.gap),contentPadding=PaddingValues(bottom=GlassTokens.bottom)) {
-   item {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.Center,verticalAlignment=Alignment.CenterVertically){IconButton(onClick={month=month.minusMonths(1)}){Icon(Icons.Rounded.ChevronLeft,"Tháng trước")};Surface(onClick={monthPicker=true},shape=CircleShape,color=MaterialTheme.colorScheme.surface){Text("Tháng ${month.monthValue}, ${month.year}",Modifier.padding(horizontal=16.dp,vertical=10.dp),style=MaterialTheme.typography.titleSmall)};IconButton(onClick={month=month.plusMonths(1)}){Icon(Icons.Rounded.ChevronRight,"Tháng sau")}}}
-   if(!details)item {var drag=0f;GlassCard(Modifier.fillMaxWidth().pointerInput(month){detectHorizontalDragGestures(onDragEnd={if(kotlin.math.abs(drag)>80)month=if(drag<0)month.plusMonths(1) else month.minusMonths(1);drag=0f}){_,delta->drag+=delta}}){Column(Modifier.padding(GlassTokens.margin),verticalArrangement=Arrangement.spacedBy(GlassTokens.gap)){
-    Row(verticalAlignment=Alignment.CenterVertically){Text("Chênh lệch tháng này",Modifier.weight(1f),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant);IconButton(onClick={info=true},Modifier.size(24.dp)){Icon(Icons.Rounded.Info,"Thông tin tổng tiền",Modifier.size(18.dp))}}
+  LargeTitleHeader(if(details)"Giao dịch" else "Tổng quan",compact){FilledIconButton(onClick={adding=true;haptic.performHapticFeedback(HapticFeedbackType.LongPress)},shape=CircleShape){Icon(AppIcons.Add,"Thêm nhanh")}}
+  LazyColumn(Modifier.fillMaxSize(),state=listState,verticalArrangement=Arrangement.spacedBy(GlassTokens.gap),contentPadding=PaddingValues(bottom=bottomContentPadding())) {
+   item {Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.Center,verticalAlignment=Alignment.CenterVertically){IconButton(onClick={month=month.minusMonths(1)}){Icon(AppIcons.ChevronLeft,"Tháng trước")};Surface(onClick={monthPicker=true},shape=CircleShape,color=MaterialTheme.colorScheme.surface){Text("Tháng ${month.monthValue}, ${month.year}",Modifier.padding(horizontal=16.dp,vertical=10.dp),style=MaterialTheme.typography.titleSmall)};IconButton(onClick={month=month.plusMonths(1)}){Icon(AppIcons.ChevronRight,"Tháng sau")}}}
+   if(!details)item {var drag=0f;GlassCard(Modifier.fillMaxWidth().clickable {onStatistics(month)}.pointerInput(month){detectHorizontalDragGestures(onDragEnd={if(kotlin.math.abs(drag)>80)month=if(drag<0)month.plusMonths(1) else month.minusMonths(1);drag=0f}){_,delta->drag+=delta}}){Column(Modifier.padding(GlassTokens.margin),verticalArrangement=Arrangement.spacedBy(GlassTokens.gap)){
+    Row(verticalAlignment=Alignment.CenterVertically){Text("Chênh lệch tháng này",Modifier.weight(1f),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant);IconButton(onClick={info=true},Modifier.size(GlassTokens.minTouch)){Icon(AppIcons.Info,"Thông tin tổng tiền",Modifier.size(18.dp))}}
     AmountText(income-expense,color=if(income>=expense)incomeColor() else expenseColor(),animate=true)
-    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(GlassTokens.gap)){listOf(Triple("Thu",income,incomeColor()),Triple("Chi",expense,expenseColor())).forEach {(label,value,color)->Column(Modifier.weight(1f).clip(RoundedCornerShape(GlassTokens.controlCorner)).background(color.copy(alpha=.07f)).padding(12.dp)){Row {Icon(if(label=="Thu")Icons.Rounded.SouthWest else Icons.Rounded.NorthEast,null,tint=color,modifier=Modifier.size(16.dp));Text(label,color=color,style=MaterialTheme.typography.bodySmall)};AmountText(value,large=false)}}}
+    if(LocalDensity.current.fontScale>=1.5f)Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(GlassTokens.gap)){
+     MonthTotalCard("Thu",income,incomeColor(),Modifier.fillMaxWidth());MonthTotalCard("Chi",expense,expenseColor(),Modifier.fillMaxWidth())
+    }else Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(GlassTokens.gap)){
+     MonthTotalCard("Thu",income,incomeColor(),Modifier.weight(1f));MonthTotalCard("Chi",expense,expenseColor(),Modifier.weight(1f))
+    }
     if(expense>0){val groups=confirmed.filter {it.kind==Kind.EXPENSE}.groupBy {it.category}.mapValues {it.value.sumOf {e->e.amount}};Row(Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),horizontalArrangement=Arrangement.spacedBy(3.dp)){groups.forEach {(name,value)->Box(Modifier.weight((value.toDouble()/expense).toFloat().coerceAtLeast(.001f)).fillMaxHeight().background(categories.firstOrNull {it.name==name}?.let {Color(it.color)}?:expenseColor()))}}}
    }}}
-   if(!details)item {Row(horizontalArrangement=Arrangement.spacedBy(GlassTokens.small)){listOf(Triple("Quét QR",Icons.Rounded.QrCodeScanner,onScan),Triple("Thêm nhanh",Icons.Rounded.Add,{adding=true}),Triple("Biên lai",Icons.Rounded.Image,onReceipt)).forEachIndexed {i,(label,icon,action)->val color=if(i==0)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface;Column(Modifier.weight(1f).clip(RoundedCornerShape(GlassTokens.corner)).background(color).clickable {haptic.performHapticFeedback(HapticFeedbackType.LongPress);action()}.padding(vertical=20.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)){Icon(icon,if(label=="Biên lai")"Đọc ảnh biên lai" else null,tint=if(i==0)Color.White else MaterialTheme.colorScheme.primary,modifier=Modifier.size(28.dp));Text(label,color=if(i==0)Color.White else MaterialTheme.colorScheme.onSurface,style=MaterialTheme.typography.labelSmall)}}}}
+   if(!details)item {Row(horizontalArrangement=Arrangement.spacedBy(GlassTokens.small)){listOf(Triple("Quét QR",AppIcons.QrCodeScanner,onScan),Triple("Thêm nhanh",AppIcons.Add,{adding=true}),Triple("Biên lai",AppIcons.ReceiptLong,onReceipt)).forEachIndexed {i,(label,icon,action)->val color=if(i==0)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface;Column(Modifier.weight(1f).tonalSurface(RoundedCornerShape(GlassTokens.corner),PastelTokens.shadowControl,color).clickable {haptic.performHapticFeedback(HapticFeedbackType.LongPress);action()}.padding(vertical=20.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)){Icon(icon,if(label=="Biên lai")"Đọc ảnh biên lai" else null,tint=if(i==0)MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,modifier=Modifier.size(28.dp));Text(label,color=if(i==0)MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,style=MaterialTheme.typography.labelMedium,textAlign=androidx.compose.ui.text.style.TextAlign.Center)}}}}
    item {SearchBar(search){search=it.take(200)}}
    if(details)item {SegmentedControl(listOf("Tất cả","Chi","Thu"),kindFilter){kindFilter=it}}
    item {Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)){Chip("Bộ lọc",showFilters){showFilters=!showFilters};Chip(category,category!="Tất cả"){showFilters=true};Chip(if(wallet=="Tất cả")"Mọi ví" else wallet,wallet!="Tất cả"){showFilters=true};Chip("Chờ xử lý",filter=="Chờ xử lý"){filter=if(filter=="Chờ xử lý")"Tất cả" else "Chờ xử lý"}}}
@@ -62,8 +67,17 @@ private fun sourceLabel(s:Source)=when(s){Source.MANUAL->"Thủ công";Source.QR
     items(rows,key={it.id}) {e->var menu by remember {mutableStateOf(false)}
      val swipe=rememberSwipeToDismissBoxState(confirmValueChange={value->if(value==SwipeToDismissBoxValue.EndToStart)deleting=e else if(value==SwipeToDismissBoxValue.StartToEnd)editing=e;false})
      SwipeToDismissBox(state=swipe,backgroundContent={Row(Modifier.fillMaxSize().clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.error.copy(alpha=.1f)).padding(16.dp),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){Text("Sửa");Text("Xoá",color=MaterialTheme.colorScheme.error)}}){
-      Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.surface).combinedClickable(onClick={viewing=e},onLongClick={menu=true}).padding(16.dp)){
-       Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)){CategoryIcon(e.category,categories.firstOrNull {it.name==e.category}?.let {Color(it.color)}?:MaterialTheme.colorScheme.primary);Column(Modifier.weight(1f)){Text(e.note.ifBlank {e.category},maxLines=1,overflow=TextOverflow.Ellipsis,style=MaterialTheme.typography.titleMedium);Text(e.wallet+" · "+sourceLabel(e.source),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant);if(e.status!=Status.CONFIRMED)Text(statusLabel(e.status),style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.tertiary)};AmountText(e.amount,Modifier.widthIn(max=150.dp),color=if(e.kind==Kind.INCOME)incomeColor() else expenseColor(),large=false)}
+      Column(Modifier.fillMaxWidth().tonalSurface(RoundedCornerShape(16.dp),PastelTokens.shadowControl).combinedClickable(onClick={viewing=e},onLongClick={menu=true}).padding(16.dp)){
+       Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(GlassTokens.gap)) {
+        CategoryIcon(e.category,categories.firstOrNull {it.name==e.category}?.let {Color(it.color)}?:MaterialTheme.colorScheme.primary)
+        Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)) {
+         Text(e.note.ifBlank {e.category},maxLines=if(stackAmounts)2 else 1,overflow=TextOverflow.Ellipsis,style=MaterialTheme.typography.titleMedium)
+         Text(e.wallet+" · "+sourceLabel(e.source),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+         if(e.status!=Status.CONFIRMED)Text(statusLabel(e.status),style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.tertiary)
+         if(stackAmounts)AmountText(e.amount,color=if(e.kind==Kind.INCOME)incomeColor() else expenseColor(),large=false,prefix=if(e.kind==Kind.INCOME)"+ " else "− ")
+        }
+        if(!stackAmounts)AmountText(e.amount,Modifier.widthIn(max=150.dp),color=if(e.kind==Kind.INCOME)incomeColor() else expenseColor(),large=false,prefix=if(e.kind==Kind.INCOME)"+ " else "− ",textAlign=androidx.compose.ui.text.style.TextAlign.End)
+       }
        if(e.status!=Status.CONFIRMED)Row {TextButton(onClick={vm.work {vm.repo.confirm(e.id)}}){Text(if(e.status==Status.APPROVAL)"Duyệt" else "Đã chuyển")};TextButton(onClick={deleting=e}){Text("Huỷ")}}
        DropdownMenu(menu,{menu=false}){DropdownMenuItem(text={Text("Chi tiết")},onClick={menu=false;viewing=e});DropdownMenuItem(text={Text("Sửa")},onClick={menu=false;editing=e});DropdownMenuItem(text={Text("Xoá")},onClick={menu=false;deleting=e})}
       }
@@ -117,7 +131,7 @@ private fun sourceLabel(s:Source)=when(s){Source.MANUAL->"Thủ công";Source.QR
   Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){CategoryIcon(category);TextButton(onClick={showCategories=!showCategories}){Text(category+" ⌄")};Box(Modifier.weight(1f)){Choice("Ví",wallets.map {it.name}.ifEmpty {listOf("Tiền mặt")},wallet){wallet=it}}}
   if(showCategories)categories.chunked(3).forEach {row->Row(Modifier.fillMaxWidth()){row.forEach {c->Column(Modifier.weight(1f).clickable {category=c.name;showCategories=false}.padding(8.dp),horizontalAlignment=Alignment.CenterHorizontally){CategoryIcon(c.name,Color(c.color));Text(c.name,style=MaterialTheme.typography.labelSmall,maxLines=2)}}}}
   OutlinedTextField(note,{note=it.take(1000)},label={Text("Ghi chú (tuỳ chọn)")},modifier=Modifier.fillMaxWidth(),singleLine=true)
-  listOf(listOf("1","2","3"),listOf("4","5","6"),listOf("7","8","9"),listOf("000","0","⌫")).forEach {keys->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){keys.forEach {digit->Surface(onClick={amount=if(digit=="⌫")amount.dropLast(1) else (amount+digit).trimStart('0').take(12)},modifier=Modifier.weight(1f),shape=RoundedCornerShape(14.dp),color=MaterialTheme.colorScheme.onSurface.copy(alpha=.04f)){Text(digit,Modifier.padding(vertical=10.dp),style=MaterialTheme.typography.headlineSmall,textAlign=androidx.compose.ui.text.style.TextAlign.Center)}}}}
+  listOf(listOf("1","2","3"),listOf("4","5","6"),listOf("7","8","9"),listOf("000","0","⌫")).forEach {keys->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){keys.forEach {digit->Surface(onClick={amount=if(digit=="⌫")amount.dropLast(1) else (amount+digit).trimStart('0').take(12)},modifier=Modifier.weight(1f).heightIn(min=GlassTokens.minTouch),shape=RoundedCornerShape(GlassTokens.controlCorner),color=MaterialTheme.colorScheme.surface,shadowElevation=if(LocalReducedEffects.current)2.dp else PastelTokens.shadowControl){Box(Modifier.padding(vertical=GlassTokens.gap),contentAlignment=Alignment.Center){if(digit=="⌫")Icon(AppIcons.Backspace,"Xoá một số") else Text(digit,style=MaterialTheme.typography.headlineSmall,textAlign=androidx.compose.ui.text.style.TextAlign.Center)}}}}}
   PillButton("Lưu",{onSave(Entry(amount=Money.input(amount)!!,category=category,kind=kind,wallet=wallet,note=note))},Modifier.fillMaxWidth(),enabled=Money.input(amount)!=null)
   Spacer(Modifier.height(24.dp))
  }}
@@ -141,4 +155,11 @@ private fun sourceLabel(s:Source)=when(s){Source.MANUAL->"Thủ công";Source.QR
  PillButton("Sửa giao dịch",onEdit,Modifier.fillMaxWidth())
  Spacer(Modifier.height(24.dp))
  }}
+}
+
+@Composable private fun MonthTotalCard(label:String,value:Long,color:Color,modifier:Modifier){
+ Column(modifier.clip(RoundedCornerShape(GlassTokens.controlCorner)).background(color.copy(alpha=.07f)).padding(GlassTokens.row)){
+  Row {Icon(if(label=="Thu")AppIcons.SouthWest else AppIcons.NorthEast,null,tint=color,modifier=Modifier.size(16.dp));Text(label,color=color,style=MaterialTheme.typography.bodySmall)}
+  AmountText(value,large=false)
+ }
 }

@@ -13,8 +13,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.geometry.Offset
@@ -51,14 +49,14 @@ import java.util.concurrent.Executors
   if(allowed)AndroidView(factory={PreviewView(it).also {v->preview=v}},modifier=Modifier.fillMaxSize().graphicsLayer {scaleX=zoom;scaleY=zoom})
   Canvas(Modifier.fillMaxSize()){val w=size.width*.7f;val x=(size.width-w)/2;val y=(size.height-w)/2;val line=w*.16f;val stroke=4.dp.toPx();listOf(Offset(x,y) to Offset(1f,1f),Offset(x+w,y) to Offset(-1f,1f),Offset(x,y+w) to Offset(1f,-1f),Offset(x+w,y+w) to Offset(-1f,-1f)).forEach {(p,d)->drawLine(Color.White,p,p+Offset(line*d.x,0f),stroke,androidx.compose.ui.graphics.StrokeCap.Round);drawLine(Color.White,p,p+Offset(0f,line*d.y),stroke,androidx.compose.ui.graphics.StrokeCap.Round)}}
   Column(Modifier.fillMaxSize().padding(20.dp),horizontalAlignment=Alignment.CenterHorizontally){
-   Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){IconButton(onClick=onBack){Icon(Icons.Rounded.Close,"Quay lại",tint=Color.White)};Text("Quét VietQR",color=Color.White,style=MaterialTheme.typography.titleLarge)}
+   Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){IconButton(onClick=onBack){Icon(AppIcons.Close,"Quay lại",tint=Color.White)};Text("Quét VietQR",color=Color.White,style=MaterialTheme.typography.titleLarge)}
    Spacer(Modifier.weight(1f))
    if(!allowed){Text("Cho phép camera để quét, hoặc chọn ảnh QR.",color=Color.White);PillButton("Cho phép camera",{permission.launch(Manifest.permission.CAMERA)})}
    if(error.isNotBlank())Text(error,color=Color(0xFFFFB4AB))
    Text("Đặt mã QR trong khung",color=Color.White,style=MaterialTheme.typography.bodyMedium)
    Row(Modifier.padding(top=20.dp,bottom=GlassTokens.bottom),horizontalArrangement=Arrangement.spacedBy(24.dp)){
-    FilledTonalIconButton(onClick={picker.launch("image/*")},modifier=Modifier.size(56.dp),shape=CircleShape){Icon(Icons.Rounded.Image,"Chọn ảnh QR")}
-    FilledTonalIconButton(onClick={torch=!torch},enabled=camera?.cameraInfo?.hasFlashUnit()==true,modifier=Modifier.size(56.dp),shape=CircleShape){Icon(if(torch)Icons.Rounded.FlashOff else Icons.Rounded.FlashOn,if(torch)"Tắt đèn" else "Bật đèn")}
+    FilledTonalIconButton(onClick={picker.launch("image/*")},modifier=Modifier.size(56.dp).tonalSurface(CircleShape,PastelTokens.shadowControl),shape=CircleShape){Icon(AppIcons.Image,"Chọn ảnh QR")}
+    FilledTonalIconButton(onClick={torch=!torch},enabled=camera?.cameraInfo?.hasFlashUnit()==true,modifier=Modifier.size(56.dp).tonalSurface(CircleShape,PastelTokens.shadowControl),shape=CircleShape){Icon(if(torch)AppIcons.FlashOff else AppIcons.FlashOn,if(torch)"Tắt đèn" else "Bật đèn")}
    }
   }
  }

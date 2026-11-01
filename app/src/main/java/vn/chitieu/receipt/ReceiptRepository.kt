@@ -37,6 +37,7 @@ object ReceiptMatching {
   }}catch(e:Exception){created?.delete();throw e}
   runCatching {deleteUnusedImage(oldImage)};return savedId
  }
+ suspend fun clearAll(){val names=repo.clearUserData();kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO){names.forEach {deleteUnusedImage(it)}}}
  suspend fun delete(id:String) {val old=repo.dao.evidenceFor(id);repo.dao.delete(id);deleteUnusedImage(old?.imageName.orEmpty())}
  private suspend fun deleteUnusedImage(name:String) {if(name.matches(Regex("[a-f0-9]{64}\\.img"))&&repo.dao.allEvidence().none {it.imageName==name})File(File(context.filesDir,"receipts"),name).delete()}
 }

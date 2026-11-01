@@ -102,3 +102,33 @@ Máy ảo (29/10/2026): Android Emulator và system image Google Play x86_64 API
 Không cài công cụ toàn máy. Dùng Python/Pillow 12.3.0 đã có để render vector icon ra PNG; cairosvg không có nên không sử dụng/cài. Tải Inter variable và giấy phép OFL từ google/fonts; bổ sung core-splashscreen 1.2.0 vào catalog. Espresso 3.7.0 chỉ thuộc APK kiểm thử, để tương thích Android 17. Gradle vẫn wrapper/JDK 17 hiện có.
 
 Bản cập nhật máy ảo dùng debug keystore mà Android Studio đã sử dụng ở C:/Users/Admin/.android/debug.keystore qua android.injected.signing.* ở lệnh build, không commit keystore/password hay cấu hình ký máy cá nhân. Bản build mặc định ở máy khác vẫn dùng debug key chuẩn của máy đó. local.properties dùng sdk.dir=D\:/ChiTieu/tools/sdk để lint không báo PropertyEscape.
+
+## Kiểm tra bản 2.1
+Không cài thêm công cụ hoặc thư viện. Dùng JDK, SDK, Gradle Wrapper và máy ảo đang có.
+
+```powershell
+. D:\ChiTieu\env.ps1
+cd D:\ChiTieu\project
+.\gradlew.bat assembleDebug assembleDebugAndroidTest testDebugUnitTest lint --max-workers=1 --console=plain
+.\gradlew.bat connectedDebugAndroidTest --max-workers=1 --console=plain
+.\scripts\adb_ui_check.ps1 -Serial emulator-5554
+```
+
+Script chỉ cài package debug, dùng dữ liệu có tiền tố test-/nhãn [SIMULATED], khôi phục font scale trong finally. Không dùng script trên bản chính hoặc dữ liệu thật. Báo cáo lần chạy và ảnh được lưu cục bộ, ngoài Git.
+
+Release 2.1.0 dùng versionCode 3, ký bằng khóa riêng hiện có tại D:\ChiTieu\signing. APK để duyệt trên máy trước; chỉ push/publish khi người dùng duyệt cuối.
+
+Bổ sung khai báo ui-tooling-preview thuộc Compose BOM đang dùng để @Preview cũng biên dịch được ở release; không thêm công cụ hay dịch vụ ngoài.
+
+Lưu ý ký debug: không trộn APK từ IDE và gói test từ CLI khi hai môi trường có ANDROID_USER_HOME khác nhau. Gói đích và gói test phải cùng chứng chỉ. Trên máy hiện tại, IDE dùng debug keystore mặc định của C:\Users\Admin\.android; nếu chỉ đóng gói lại gói test cho APK của IDE thì đặt ANDROID_USER_HOME về thư mục đó trước khi chạy assembleDebugAndroidTest. Khóa release riêng không liên quan bước này.
+
+## Công cụ cho lượt UI — 01/11/2026
+- Dùng skill UI UX Pro Max cài tại `C:/Users/Admin/.codex/skills/ui-ux-pro-max`; query bằng Python đã có ở `C:/Users/Admin/Documents/Codex/tools/graphify/Scripts/python.exe`.
+- Không cài thêm SDK, font, thư viện Android hay công cụ tạo ảnh. Máy ảo Medium_Phone_API_37.0 đã có được khởi động headless để kiểm tra.
+- `scripts/adb_ui_polish.ps1` chỉ chấp nhận serial máy ảo; chạy sau khi bộ test kết thúc để tránh tranh UiAutomation. Kịch bản khôi phục font_scale và wm size trong finally, chỉ nạp/xoá ID test-/SIMULATED qua debug harness.
+
+
+## G2 native — 02/11/2026
+Không cài công cụ mới, không đổi SDK/JDK/Gradle hoặc thêm dependency app. Node/Lucide có sẵn dùng xuất các path được chọn sang native Kotlin; Python có sẵn dùng kiểm tra/capture. Tệp ISC đi kèm. Bitmap xem trước cũ không được dùng thay vector launcher.
+
+Pre-release G2: dùng khoá PKCS12 sẵn có trong D:/ChiTieu/signing, truyền mật khẩu bằng file cho apksigner, không đưa khoá/mật khẩu vào repository. Bản APK nằm trong GitHub Release assets; bản ổn định vẫn được giữ. Script adb_g2_capture.py chỉ chạy trên emulator và lưu ảnh/XML cục bộ.

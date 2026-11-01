@@ -20,11 +20,12 @@ class MigrationTest {
    // Reconstruct the exact v1 tables from v2, whose only added table is receipt_evidence.
    initial.openHelper.writableDatabase.apply {
     execSQL("DROP TABLE receipt_evidence")
+    execSQL("DROP INDEX index_entries_status_createdAt_kind_wallet_category")
     execSQL("UPDATE room_master_table SET identity_hash='d5e4bd1b22bbd3a439bcec73cb3d02df' WHERE id=42")
     version = 1
    }
    initial.close()
-   val upgraded = Room.databaseBuilder(context, LedgerDb::class.java, name).addMigrations(MIGRATION_1_2).build()
+   val upgraded = Room.databaseBuilder(context, LedgerDb::class.java, name).addMigrations(MIGRATION_1_2,MIGRATION_2_3).build()
    try {
     assertEquals(12345L, upgraded.dao().get("test-migration")?.amount)
     upgraded.dao().evidence(ReceiptEvidence("test-migration","a".repeat(64),"TEST","TEST",1))

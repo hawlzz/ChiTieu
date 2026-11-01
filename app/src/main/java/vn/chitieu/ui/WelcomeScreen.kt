@@ -4,8 +4,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.*
 import androidx.compose.foundation.shape.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -19,11 +17,11 @@ import vn.chitieu.ui.theme.*
  val pager=rememberPagerState {3};val scope=rememberCoroutineScope();val reduced=LocalReduceMotion.current
  val titles=listOf("Chào mừng đến ChiTieu","Quét, chuyển, ghi chép","Riêng tư trên thiết bị")
  val descriptions=listOf("Mọi khoản tiền, rõ ràng hơn.","Quét VietQR, mở ngân hàng và quay lại xác nhận khoản chi.","Dữ liệu chỉ nằm trên máy. Không tài khoản, không quảng cáo.")
- val icons=listOf(Icons.Rounded.AccountBalanceWallet,Icons.Rounded.QrCodeScanner,Icons.Rounded.Shield)
+ val icons=listOf(AppIcons.AccountBalanceWallet,AppIcons.QrCodeScanner,AppIcons.Shield)
  Column(Modifier.fillMaxSize().safeDrawingPadding().padding(GlassTokens.margin),horizontalAlignment=Alignment.CenterHorizontally){
   Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.End){TextButton(onClick={onFinish(false)}){Text("Bỏ qua")}}
   HorizontalPager(pager,Modifier.weight(1f)){page->Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(vertical=32.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(24.dp)){
-   Box(Modifier.size(220.dp).clip(RoundedCornerShape(56.dp)).background(Brush.linearGradient(listOf(Color(0xFF0A4DFF),Color(0xFF19C2C9)))),contentAlignment=Alignment.Center){Icon(icons[page],null,tint=Color.White,modifier=Modifier.size(100.dp))}
+   if(page==0)BrandMark(Modifier.size(PastelTokens.welcome)) else FrostedIconBadge(icons[page],size=PastelTokens.welcome,glyphSize=PastelTokens.welcomeGlyph)
    Text(titles[page],style=MaterialTheme.typography.headlineLarge,textAlign=androidx.compose.ui.text.style.TextAlign.Center)
    Text(descriptions[page],style=MaterialTheme.typography.bodyLarge,color=MaterialTheme.colorScheme.onSurfaceVariant,textAlign=androidx.compose.ui.text.style.TextAlign.Center)
   }}

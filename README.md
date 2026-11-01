@@ -9,6 +9,8 @@ Mọi khoản tiền, rõ ràng hơn.
 
 **[Tải APK · v2.0.0](releases/ChiTieu-2.0.0-release.apk?raw=true)** · Android 13 trở lên
 
+[Bản thử nghiệm 2.1.0-beta.1](https://github.com/hawlzz/ChiTieu/releases/tag/v2.1.0-beta.1) · Giao diện pastel mới, khoá app và thống kê
+
 </div>
 
 ## Gọn gàng mỗi ngày
